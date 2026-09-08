@@ -1,0 +1,9 @@
+# Generated data
+frames/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+
+# VS Code workspace settings
+.vscode/
