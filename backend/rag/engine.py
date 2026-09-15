@@ -66,7 +66,7 @@ def build_index() -> None:
     """Build the FAISS index from KNOWLEDGE_BASE. Called once at startup."""
     global _index, _documents
 
-    print("🔧 Building RAG vector index...")
+    print("[INFO] Building RAG vector index...")
     _documents = KNOWLEDGE_BASE
     embeddings = []
 
@@ -78,7 +78,7 @@ def build_index() -> None:
     matrix = np.stack(embeddings, axis=0)
     _index = faiss.IndexFlatIP(matrix.shape[1])  # Inner Product = cosine on normalized vecs
     _index.add(matrix)
-    print(f"✅ RAG index ready — {len(_documents)} documents indexed.")
+    print(f"[SUCCESS] RAG index ready — {len(_documents)} documents indexed.")
 
 
 def retrieve(query: str, top_k: int = 4) -> list[dict]:

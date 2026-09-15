@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Search, 
@@ -7,10 +7,11 @@ import {
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
-import { ANPR_RECORDS_MOCK, CAMERA_NODES } from '../data/mockData';
+import api from '../api/client';
 
 export default function ANPRRecords() {
-  const navigate = useNavigate();
+  const [allRecords, setAllRecords] = useState([]);
+  const [cameras, setCameras] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCamera, setSelectedCamera] = useState('ALL');
   const [selectedStatus, setSelectedStatus] = useState('ALL');
@@ -18,8 +19,15 @@ export default function ANPRRecords() {
   const [sortAsc, setSortAsc] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
-  // Filtering
-  const filteredRecords = ANPR_RECORDS_MOCK.filter((rec) => {
+  useEffect(() => {
+    api.getVehicles().then(data => {
+      setAllRecords(data.anprRecords || []);
+    }).catch(err => console.error('Failed to load ANPR records:', err));
+    api.getCameras().then(data => {
+      setCameras(data.cameras || []);
+    }).catch(err => console.error('Failed to load cameras:', err));
+  }, []);
+  const filteredRecords = allRecords.filter((rec) => {
     const matchesSearch = 
       rec.plate.toLowerCase().includes(searchTerm.toLowerCase()) ||
       rec.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -118,7 +126,7 @@ export default function ANPRRecords() {
                   className="pl-3 pr-8 py-2 bg-[#0d1120] border border-[#1e2d45] rounded-lg text-xs text-slate-200 focus:outline-none focus:border-[#3b82f6] cursor-pointer"
                 >
                   <option value="ALL">All Camera Nodes</option>
-                  {CAMERA_NODES.map((cam) => (
+                  {cameras.map((cam) => (
                     <option key={cam.id} value={cam.id}>
                       {cam.id} — {cam.shortName}
                     </option>

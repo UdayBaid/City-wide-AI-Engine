@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FileText, 
   Plus, 
@@ -11,10 +11,16 @@ import {
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
-import { REPORTS_LIST } from '../data/mockData';
+import api from '../api/client';
 
 export default function Reports() {
-  const [reports, setReports] = useState(REPORTS_LIST);
+  const [reports, setReports] = useState([]);
+
+  useEffect(() => {
+    api.getReports().then(data => {
+      setReports(data.reports || []);
+    }).catch(err => console.error('Failed to load reports:', err));
+  }, []);
   const [downloadingId, setDownloadingId] = useState(null);
   const [showGenerateModal, setShowGenerateModal] = useState(false);
   const [newReportTitle, setNewReportTitle] = useState('Corridor Congestion & Speed Violation Audit');

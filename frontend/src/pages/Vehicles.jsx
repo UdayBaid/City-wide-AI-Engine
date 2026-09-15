@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Car, 
@@ -8,14 +8,21 @@ import {
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
-import { INDIAN_VEHICLE_DATABASE } from '../data/mockData';
+import api from '../api/client';
 
 export default function Vehicles() {
   const navigate = useNavigate();
+  const [allVehicles, setAllVehicles] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('ALL');
 
-  const filteredVehicles = INDIAN_VEHICLE_DATABASE.filter((veh) => {
+  useEffect(() => {
+    api.getVehicles().then(data => {
+      setAllVehicles(data.vehicleDatabase || []);
+    }).catch(err => console.error('Failed to load vehicles:', err));
+  }, []);
+
+  const filteredVehicles = allVehicles.filter((veh) => {
     const matchesSearch = 
       veh.plate.toLowerCase().includes(searchTerm.toLowerCase()) ||
       veh.make.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -50,7 +57,7 @@ export default function Vehicles() {
 
             <div className="flex items-center gap-2 font-mono text-xs text-slate-300">
               <span className="px-3 py-1.5 bg-[#0d1120] border border-[#1e2d45] rounded-lg">
-                Total Vehicles: <span className="text-[#06b6d4] font-bold">{INDIAN_VEHICLE_DATABASE.length}</span>
+                Total Vehicles: <span className="text-[#06b6d4] font-bold">{allVehicles.length}</span>
               </span>
             </div>
           </div>

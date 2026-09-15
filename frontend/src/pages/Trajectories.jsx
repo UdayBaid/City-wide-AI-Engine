@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import L from 'leaflet';
 import { 
@@ -11,7 +11,8 @@ import {
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
-import { CAMERA_NODES, TRAJECTORY_TARGET } from '../data/mockData';
+import { TRAJECTORY_TARGET } from '../data/mockData';
+import api from '../api/client';
 
 // Map markers
 const createNodeIcon = (camId, isPathNode, nodeIndex) => {
@@ -68,10 +69,15 @@ const createNodeIcon = (camId, isPathNode, nodeIndex) => {
 };
 
 export default function Trajectories() {
+  const [cameras, setCameras] = useState([]);
   const [searchPlate, setSearchPlate] = useState('PB10XX1234');
   const [searchDate, setSearchDate] = useState('2026-09-14');
   const [target, setTarget] = useState(TRAJECTORY_TARGET);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+
+  useEffect(() => {
+    api.getCameras().then(data => setCameras(data.cameras || []));
+  }, []);
 
   // Path coordinates for polyline: CAM-06 -> CAM-04 -> CAM-01 -> CAM-02
   const pathPositions = target.nodes.map((n) => [n.lat, n.lng]);
@@ -190,7 +196,7 @@ export default function Trajectories() {
                   />
 
                   {/* Render All 8 Cameras with special style for target path */}
-                  {CAMERA_NODES.map((cam) => {
+                  {cameras.map((cam) => {
                     const nodeIndex = target.nodes.findIndex((n) => n.camera === cam.id);
                     const isPathNode = nodeIndex !== -1;
                     const pathDetails = isPathNode ? target.nodes[nodeIndex] : null;

@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Video, WifiOff, Camera } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
-import { CAMERA_NODES } from '../data/mockData';
-
+import api from '../api/client';
 const INDIAN_SAMPLE_PLATES = [
   "DL01AB1044", "HR26BC4419", "DL03CC8899", "UP16AK5522", 
   "DL08CX9901", "PB10XX1234", "CH01TB9002", "DL12CP0045",
@@ -12,8 +11,17 @@ const INDIAN_SAMPLE_PLATES = [
 ];
 
 export default function LiveCameras() {
-  const [cameras, setCameras] = useState(CAMERA_NODES);
+  const [cameras, setCameras] = useState([]);
   const [videoErrors, setVideoErrors] = useState({});
+
+  // Fetch from backend on mount
+  useEffect(() => {
+    api.getCameras().then(data => {
+      if (data && data.cameras) {
+        setCameras(data.cameras);
+      }
+    }).catch(err => console.error("Failed to load cameras:", err));
+  }, []);
 
   // Cycle plates every 2 seconds for active cameras
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Bell, 
   CheckCircle, 
@@ -7,12 +7,21 @@ import {
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
-import { INITIAL_ALERTS, HISTORICAL_INCIDENTS } from '../data/mockData';
+import api from '../api/client';
 
 export default function Alerts() {
-  const [activeAlerts, setActiveAlerts] = useState(INITIAL_ALERTS);
-  const [incidentLogs, setIncidentLogs] = useState(HISTORICAL_INCIDENTS);
+  const [activeAlerts, setActiveAlerts] = useState([]);
+  const [incidentLogs, setIncidentLogs] = useState([]);
   const [activeTab, setActiveTab] = useState('ALL');
+
+  useEffect(() => {
+    api.getAlerts().then(data => {
+      if (data) {
+        setActiveAlerts(data.active || []);
+        setIncidentLogs(data.historical || []);
+      }
+    }).catch(err => console.error("Failed to load alerts:", err));
+  }, []);
 
   const handleResolveAlert = (alertId) => {
     const resolvedItem = activeAlerts.find((a) => a.id === alertId);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, 
   BarChart, Bar, Cell 
@@ -11,12 +11,11 @@ import {
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
 import { 
-  TRAFFIC_FLOW_24H, 
   VELOCITY_DISTRIBUTION, 
   WEEKLY_CONGESTION_MATRIX, 
-  TOP_OD_CORRIDORS, 
-  CAMERA_NODES 
+  TOP_OD_CORRIDORS
 } from '../data/mockData';
+import api from '../api/client';
 
 const getMatrixCellColor = (level) => {
   switch (level) {
@@ -33,6 +32,14 @@ const getMatrixCellColor = (level) => {
 };
 
 export default function Analytics() {
+  const [trafficFlow, setTrafficFlow] = useState([]);
+  const [cameras, setCameras] = useState([]);
+
+  useEffect(() => {
+    api.getTraffic().then(data => setTrafficFlow(data.flow24h || []));
+    api.getCameras().then(data => setCameras(data.cameras || []));
+  }, []);
+
   return (
     <div className="flex bg-[#0a0d1a] min-h-screen text-[#f1f5f9]">
       <Sidebar />
@@ -72,7 +79,7 @@ export default function Analytics() {
 
               <div className="h-60 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={TRAFFIC_FLOW_24H} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <AreaChart data={trafficFlow} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="analyticsFlowGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.5}/>
@@ -282,7 +289,7 @@ export default function Analytics() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#1e2d45] bg-[#0d1120]/50 font-mono text-[11px]">
-                  {CAMERA_NODES.map((cam) => {
+                  {cameras.map((cam) => {
                     const isOffline = cam.status === 'offline';
                     return (
                       <tr key={cam.id} className="hover:bg-[#111827] transition-colors">

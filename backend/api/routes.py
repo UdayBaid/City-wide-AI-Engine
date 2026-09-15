@@ -28,7 +28,7 @@ router = APIRouter(prefix="/api")
 # In production, replace these with real DB queries.
 
 CAMERA_NODES = [
-    {"id": "CAM-01", "name": "Connaught Place Outer Circle", "shortName": "Connaught Place", "lat": 28.6315, "lng": 77.2167, "status": "online", "fps": 30, "resolution": "1080P/60FPS", "todayReads": 19420, "accuracy": "96.4%", "lastSeen": "Just now", "direction": "Radial-North", "videoSrc": "/videos/camera1.mp4", "lastPlate": "DL01AB1044", "lastSpeed": 38, "vehicleCount": 1420},
+    {"id": "CAM-01", "name": "Connaught Place Outer Circle (Connected to Backend!)", "shortName": "Connaught Place", "lat": 28.6315, "lng": 77.2167, "status": "online", "fps": 30, "resolution": "1080P/60FPS", "todayReads": 19420, "accuracy": "96.4%", "lastSeen": "Just now", "direction": "Radial-North", "videoSrc": "/videos/camera1.mp4", "lastPlate": "DL01AB1044", "lastSpeed": 38, "vehicleCount": 1420},
     {"id": "CAM-02", "name": "India Gate C-Hexagon", "shortName": "India Gate", "lat": 28.6129, "lng": 77.2295, "status": "online", "fps": 30, "resolution": "4K/30FPS", "todayReads": 22180, "accuracy": "97.1%", "lastSeen": "Just now", "direction": "South-Circle", "videoSrc": "/videos/camera2.mp4", "lastPlate": "HR26BC4419", "lastSpeed": 42, "vehicleCount": 1890},
     {"id": "CAM-03", "name": "ITO Junction Mathura Road", "shortName": "ITO Junction", "lat": 28.6262, "lng": 77.2410, "status": "online", "fps": 30, "resolution": "1080P/30FPS", "todayReads": 31450, "accuracy": "95.8%", "lastSeen": "Just now", "direction": "East-Corridor", "videoSrc": "/videos/camera3.mp4", "lastPlate": "DL03CC8899", "lastSpeed": 29, "vehicleCount": 2450},
     {"id": "CAM-04", "name": "Karol Bagh Pusa Road", "shortName": "Karol Bagh", "lat": 28.6514, "lng": 77.1907, "status": "online", "fps": 30, "resolution": "1080P/30FPS", "todayReads": 16840, "accuracy": "94.9%", "lastSeen": "Just now", "direction": "West-Axial", "videoSrc": "/videos/camera4.mp4", "lastPlate": "UP16AK5522", "lastSpeed": 34, "vehicleCount": 1180},
@@ -233,15 +233,43 @@ Guidelines:
         )
     )
 
-    response = client.models.generate_content(
-        model="gemini-3.7-flash",
-        contents=contents,
-        config=types.GenerateContentConfig(
-            system_instruction=system_prompt,
-            temperature=0.3,
-            max_output_tokens=1024,
+    # Try primary model, then fallback, then raise friendly error
+    models_to_try = ["gemini-3.6-flash", "gemini-1.5-flash"]
+    response = None
+    last_error = None
+
+    for model_name in models_to_try:
+        try:
+            response = client.models.generate_content(
+                model=model_name,
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_prompt,
+                    temperature=0.3,
+                    max_output_tokens=1024,
+                )
+            )
+            break  # Success — stop trying
+        except Exception as e:
+            last_error = e
+            error_str = str(e)
+            # Only retry on 503/overload errors
+            if "503" in error_str or "UNAVAILABLE" in error_str or "quota" in error_str.lower():
+                continue
+            # For other errors, raise immediately
+            raise HTTPException(
+                status_code=500,
+                detail=f"Gemini API error: {error_str[:200]}"
+            )
+
+    if response is None:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "The Gemini AI model is currently experiencing high demand. "
+                "Please wait a moment and try again. Your API key is valid and the backend is running."
+            )
         )
-    )
 
     answer = response.text or "I was unable to generate a response. Please try again."
 

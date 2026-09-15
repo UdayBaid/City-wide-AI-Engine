@@ -17,11 +17,7 @@ import {
 
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
-import { 
-  CAMERA_NODES, 
-  TRAFFIC_FLOW_24H, 
-  CONGESTED_SEGMENTS 
-} from '../data/mockData';
+import api from '../api/client';
 
 // (Google Maps CityMap component handles all map rendering)
 
@@ -36,7 +32,17 @@ export default function Dashboard() {
     avgSpeed: 33,
     activeAlerts: 3
   });
+  const [cameras, setCameras] = useState([]);
+  const [trafficFlow, setTrafficFlow] = useState([]);
+  const [congestedSegments, setCongestedSegments] = useState([]);
 
+  useEffect(() => {
+    api.getCameras().then(data => setCameras(data.cameras || []));
+    api.getTraffic().then(data => {
+      setTrafficFlow(data.flow24h || []);
+      setCongestedSegments(data.congestedSegments || []);
+    });
+  }, []);
   useEffect(() => {
     const interval = setInterval(() => {
       setStats((prev) => ({
@@ -171,7 +177,7 @@ export default function Dashboard() {
 
 
               {/* Google Maps */}
-              <CityMap cameras={CAMERA_NODES} height={360} />
+              <CityMap cameras={cameras} height={360} />
 
             </div>
 
@@ -276,7 +282,7 @@ export default function Dashboard() {
 
               <div className="h-44 w-full mt-2">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={TRAFFIC_FLOW_24H} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                  <AreaChart data={trafficFlow} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorVehicles" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4}/>
@@ -334,7 +340,7 @@ export default function Dashboard() {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart 
                     layout="vertical" 
-                    data={CONGESTED_SEGMENTS} 
+                    data={congestedSegments} 
                     margin={{ top: 5, right: 20, left: 20, bottom: 5 }}
                   >
                     <XAxis type="number" domain={[0, 100]} hide />
@@ -357,7 +363,7 @@ export default function Dashboard() {
                       }} 
                     />
                     <Bar dataKey="congestion" radius={[0, 4, 4, 0]}>
-                      {CONGESTED_SEGMENTS.map((entry, index) => (
+                      {congestedSegments.map((entry, index) => (
                         <Cell 
                           key={`cell-${index}`} 
                           fill={entry.congestion > 80 ? '#ef4444' : entry.congestion > 70 ? '#f59e0b' : '#3b82f6'} 

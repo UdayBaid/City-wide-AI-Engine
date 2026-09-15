@@ -1,13 +1,3 @@
-"""
-City-wide AI Engine — FastAPI Main Entry Point
-===============================================
-Run with:
-    uvicorn main:app --reload --port 8000
-
-Or use the start script:
-    python start.py
-"""
-
 import os
 from contextlib import asynccontextmanager
 
@@ -30,10 +20,13 @@ async def lifespan(app: FastAPI):
         try:
             build_index()
         except Exception as e:
-            print(f"⚠️  WARNING: Failed to build RAG index due to API error: {e}")
+            with open("error.log", "w") as f:
+                import traceback
+                f.write(traceback.format_exc())
+            print(f"[WARNING] Failed to build RAG index due to API error: {e}")
             print("   The server will start, but the AI Assistant may fail to answer.")
     else:
-        print("⚠️  WARNING: GEMINI_API_KEY not set. RAG /api/chat endpoint will not work.")
+        print("[WARNING] GEMINI_API_KEY not set. RAG /api/chat endpoint will not work.")
         print("   Edit backend/.env and add your Gemini API key.")
     yield
 
