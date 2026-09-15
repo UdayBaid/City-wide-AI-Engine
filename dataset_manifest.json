@@ -1,7 +1,7 @@
 {
-  "source": "C:\\Users\\udot\\OneDrive\\Desktop\\New folder\\sih project\\AICity22_Track1_MTMC_Tracking",
-  "output": "C:\\Users\\udot\\OneDrive\\Desktop\\New folder\\sih project\\frames",
-  "video_count": 0,
-  "image_count": 0,
-  "timestamp_utc": "2026-09-08T00:00:00+00:00"
+  "source": "C:\\Users\\udot\\OneDrive\\Desktop\\New folder\\sih project\\AICity22_Track1_MTMC_Tracking\\train\\S01\\c001",
+  "output": "C:\\Users\\udot\\OneDrive\\Desktop\\New folder\\sih project\\frames_small",
+  "video_count": 1,
+  "image_count": 1,
+  "timestamp_utc": "2026-09-10T04:09:01.016957+00:00"
 }
