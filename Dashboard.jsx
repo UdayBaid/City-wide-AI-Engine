@@ -1,0 +1,491 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+import { 
+  AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, 
+  BarChart, Bar, Cell 
+} from 'recharts';
+import { 
+  Car, 
+  Route, 
+  Gauge, 
+  AlertTriangle, 
+  ChevronRight, 
+  CheckCircle2, 
+  TrendingUp
+} from 'lucide-react';
+
+import Sidebar from '../components/Sidebar';
+import Topbar from '../components/Topbar';
+import { 
+  CAMERA_NODES, 
+  TRAFFIC_FLOW_24H, 
+  CONGESTED_SEGMENTS 
+} from '../data/mockData';
+
+// Custom Map Marker creator
+const createCameraIcon = (status, id) => {
+  const isOffline = status === 'offline';
+  return L.divIcon({
+    className: 'custom-leaflet-marker',
+    html: `
+      <div style="
+        width: 32px; 
+        height: 32px; 
+        border-radius: 50%; 
+        background: #0d1120; 
+        border: 2px solid ${isOffline ? '#f59e0b' : '#3b82f6'}; 
+        box-shadow: 0 0 12px ${isOffline ? 'rgba(245,158,11,0.6)' : 'rgba(59,130,246,0.6)'}; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        color: ${isOffline ? '#f59e0b' : '#3b82f6'}; 
+        font-family: monospace; 
+        font-size: 10px; 
+        font-weight: bold;
+      ">
+        ${id.replace('CAM-0', 'C')}
+      </div>
+    `,
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -18]
+  });
+};
+
+export default function Dashboard() {
+  const navigate = useNavigate();
+
+  // Dynamic live stats with small 3-second variation
+  const [stats, setStats] = useState({
+    totalVehicles: 1281,
+    activeTrajectories: 325,
+    avgSpeed: 33,
+    activeAlerts: 3
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStats((prev) => ({
+        totalVehicles: Math.max(1200, prev.totalVehicles + Math.floor(Math.random() * 7) - 3),
+        activeTrajectories: Math.max(300, prev.activeTrajectories + Math.floor(Math.random() * 5) - 2),
+        avgSpeed: Math.max(28, Math.min(42, prev.avgSpeed + Math.floor(Math.random() * 3) - 1)),
+        activeAlerts: 3
+      }));
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="flex bg-[#0a0d1a] min-h-screen text-[#f1f5f9]">
+      {/* 220px Fixed Sidebar */}
+      <Sidebar />
+
+      {/* Main Content Area */}
+      <div className="flex-1 ml-[220px] min-h-screen flex flex-col">
+        <Topbar pageTitle="Dashboard" />
+
+        <main className="p-6 space-y-6 flex-1">
+          {/* ROW 1: 4 Stat Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Card 1: Total Vehicles */}
+            <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 relative overflow-hidden">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-[#64748b] uppercase tracking-wider">
+                  Total Vehicles
+                </span>
+                <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-[#3b82f6]">
+                  <Car className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <h3 className="text-2xl lg:text-3xl font-bold font-mono text-white tracking-tight">
+                  {stats.totalVehicles.toLocaleString()}
+                </h3>
+                <p className="text-xs text-[#22c55e] font-medium flex items-center gap-1 mt-1">
+                  <TrendingUp className="w-3.5 h-3.5" />
+                  +3.8% vs last hr
+                </p>
+              </div>
+            </div>
+
+            {/* Card 2: Active Trajectories */}
+            <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 relative overflow-hidden">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-[#64748b] uppercase tracking-wider">
+                  Active Trajectories
+                </span>
+                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-[#06b6d4]">
+                  <Route className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <h3 className="text-2xl lg:text-3xl font-bold font-mono text-[#3b82f6] tracking-tight">
+                  {stats.activeTrajectories}
+                </h3>
+                <p className="text-xs text-[#64748b] font-medium mt-1">
+                  Correlated across 8 nodes
+                </p>
+              </div>
+            </div>
+
+            {/* Card 3: Avg Corridor Speed */}
+            <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 relative overflow-hidden">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-[#64748b] uppercase tracking-wider">
+                  Avg Corridor Speed
+                </span>
+                <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-[#f59e0b]">
+                  <Gauge className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <h3 className="text-2xl lg:text-3xl font-bold font-mono text-white tracking-tight">
+                  {stats.avgSpeed} <span className="text-sm font-normal text-[#64748b]">km/h</span>
+                </h3>
+                <p className="text-xs text-[#f59e0b] font-medium mt-1">
+                  Peak congestion active
+                </p>
+              </div>
+            </div>
+
+            {/* Card 4: Active Alerts */}
+            <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 relative overflow-hidden">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-[#64748b] uppercase tracking-wider">
+                  Active Alerts
+                </span>
+                <div className="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-[#ef4444]">
+                  <AlertTriangle className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <h3 className="text-2xl lg:text-3xl font-bold font-mono text-[#ef4444] tracking-tight">
+                  {stats.activeAlerts}
+                </h3>
+                <p className="text-xs text-[#ef4444] font-medium mt-1">
+                  1 critical blacklist hit
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* ROW 2: Map (65%) + Alerts panel (35%) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* MAP CARD: 65% (8 cols) */}
+            <div className="lg:col-span-8 bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-base font-semibold text-[#f1f5f9]">
+                    🗺 Delhi Grid Surveillance Map
+                  </span>
+                  <span className="text-xs font-mono text-[#64748b] bg-[#0d1120] px-2 py-0.5 rounded border border-[#1e2d45]">
+                    8 Surveillance Intersections
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-xs text-[#64748b]">
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#3b82f6]"></span>
+                    Active Node (7)
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#f59e0b]"></span>
+                    Offline Node (1)
+                  </span>
+                </div>
+              </div>
+
+              {/* Leaflet Map */}
+              <div className="w-full h-[360px] rounded-lg overflow-hidden border border-[#1e2d45] z-0">
+                <MapContainer
+                  center={[28.6139, 77.2090]}
+                  zoom={12}
+                  scrollWheelZoom={false}
+                  style={{ width: '100%', height: '100%' }}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                  />
+                  {CAMERA_NODES.map((cam) => (
+                    <Marker
+                      key={cam.id}
+                      position={[cam.lat, cam.lng]}
+                      icon={createCameraIcon(cam.status, cam.id)}
+                    >
+                      <Popup>
+                        <div className="p-1 min-w-[200px] text-xs">
+                          <div className="flex items-center justify-between border-b border-[#1e2d45] pb-1.5 mb-1.5">
+                            <span className="font-bold text-[#06b6d4] font-mono">{cam.id}</span>
+                            <span
+                              className={`px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase ${
+                                cam.status === 'online'
+                                  ? 'bg-emerald-500/20 text-[#22c55e]'
+                                  : 'bg-amber-500/20 text-[#f59e0b]'
+                              }`}
+                            >
+                              {cam.status}
+                            </span>
+                          </div>
+                          <p className="font-semibold text-slate-200">{cam.name}</p>
+                          <div className="mt-2 space-y-1 text-slate-400 font-mono text-[11px]">
+                            <div className="flex justify-between">
+                              <span>Vehicles Logged:</span>
+                              <span className="text-slate-200">{cam.todayReads.toLocaleString()}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Corridor Speed:</span>
+                              <span className="text-slate-200">{cam.lastSpeed} km/h</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>OCR Accuracy:</span>
+                              <span className="text-emerald-400">{cam.accuracy}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </Popup>
+                    </Marker>
+                  ))}
+                </MapContainer>
+              </div>
+            </div>
+
+            {/* ALERTS PANEL: 35% (4 cols) */}
+            <div className="lg:col-span-4 bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-sm font-semibold text-[#f1f5f9]">
+                      🔔 Recent Alerts
+                    </h4>
+                    <span className="px-2 py-0.5 bg-red-500/20 border border-red-500/30 text-[#ef4444] text-[10px] font-bold rounded uppercase tracking-wider flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#ef4444] animate-ping" />
+                      LIVE
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono text-[#64748b]">AUTO-SYNC</span>
+                </div>
+
+                {/* Alert Items */}
+                <div className="space-y-2.5">
+                  {/* Item 1: Red border */}
+                  <div className="p-3 bg-[#0d1120] border-l-4 border-l-[#ef4444] border border-[#1e2d45] rounded-r-lg">
+                    <div className="flex justify-between items-start">
+                      <span className="text-xs font-bold text-red-400">
+                        Blacklisted Vehicle — DL08CX9901
+                      </span>
+                      <span className="text-[10px] text-[#64748b] font-mono">2m ago</span>
+                    </div>
+                    <p className="text-[11px] text-[#64748b] mt-1">
+                      Detected at AIIMS Flyover (CAM-05). Stolen vehicle FIR match.
+                    </p>
+                  </div>
+
+                  {/* Item 2: Orange border */}
+                  <div className="p-3 bg-[#0d1120] border-l-4 border-l-[#f59e0b] border border-[#1e2d45] rounded-r-lg">
+                    <div className="flex justify-between items-start">
+                      <span className="text-xs font-bold text-amber-400">
+                        Severe Speeding — HR26DQ5521
+                      </span>
+                      <span className="text-[10px] text-[#64748b] font-mono">6m ago</span>
+                    </div>
+                    <p className="text-[11px] text-[#64748b] mt-1">
+                      85 km/h recorded in 50 km/h zone at ITO Junction.
+                    </p>
+                  </div>
+
+                  {/* Item 3: Orange border */}
+                  <div className="p-3 bg-[#0d1120] border-l-4 border-l-[#f59e0b] border border-[#1e2d45] rounded-r-lg">
+                    <div className="flex justify-between items-start">
+                      <span className="text-xs font-bold text-amber-400">
+                        Overspeed — CH01TB9002
+                      </span>
+                      <span className="text-[10px] text-[#64748b] font-mono">12m ago</span>
+                    </div>
+                    <p className="text-[11px] text-[#64748b] mt-1">
+                      92 km/h at ISBT North Terminal approach corridor.
+                    </p>
+                  </div>
+
+                  {/* Item 4: Blue border */}
+                  <div className="p-3 bg-[#0d1120] border-l-4 border-l-[#3b82f6] border border-[#1e2d45] rounded-r-lg">
+                    <div className="flex justify-between items-start">
+                      <span className="text-xs font-bold text-blue-400">
+                        Camera Offline — CAM-07
+                      </span>
+                      <span className="text-[10px] text-[#64748b] font-mono">14m ago</span>
+                    </div>
+                    <p className="text-[11px] text-[#64748b] mt-1">
+                      Heartbeat timeout on Lajpat Nagar Ring Road.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* View all alerts button */}
+              <button
+                onClick={() => navigate('/alerts')}
+                className="mt-4 w-full py-2.5 px-3 bg-[#0d1120] hover:bg-[#161f35] border border-[#1e2d45] hover:border-[#3b82f6] text-xs font-semibold text-[#3b82f6] rounded-lg transition-all flex items-center justify-center gap-1 group"
+              >
+                <span>View All Alerts</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </div>
+
+          {/* ROW 3: 3 Analytics Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Card 1: Traffic Flow (24 Hours) */}
+            <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h4 className="text-xs font-semibold text-[#f1f5f9]">
+                    Traffic Flow (24 Hours)
+                  </h4>
+                  <p className="text-[11px] text-[#64748b]">Hourly vehicle volume throughput</p>
+                </div>
+                <span className="text-[10px] font-mono text-[#06b6d4] bg-[#0d1120] px-2 py-0.5 rounded border border-[#1e2d45]">
+                  LIVE AGG
+                </span>
+              </div>
+
+              <div className="h-44 w-full mt-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={TRAFFIC_FLOW_24H} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorVehicles" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4}/>
+                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <XAxis 
+                      dataKey="time" 
+                      stroke="#64748b" 
+                      fontSize={10} 
+                      tickLine={false}
+                    />
+                    <YAxis 
+                      stroke="#64748b" 
+                      fontSize={10} 
+                      tickLine={false}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: '#0d1120', 
+                        borderColor: '#1e2d45', 
+                        borderRadius: '8px', 
+                        fontSize: '11px',
+                        color: '#f1f5f9'
+                      }} 
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="vehicles" 
+                      stroke="#3b82f6" 
+                      strokeWidth={2} 
+                      fillOpacity={1} 
+                      fill="url(#colorVehicles)" 
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Card 2: Top Congested Segments */}
+            <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h4 className="text-xs font-semibold text-[#f1f5f9]">
+                    Top Congested Segments
+                  </h4>
+                  <p className="text-[11px] text-[#64748b]">Real-time congestion severity index</p>
+                </div>
+                <span className="text-[10px] font-mono text-[#f59e0b] bg-[#0d1120] px-2 py-0.5 rounded border border-[#1e2d45]">
+                  DELAY IDX
+                </span>
+              </div>
+
+              <div className="h-44 w-full mt-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart 
+                    layout="vertical" 
+                    data={CONGESTED_SEGMENTS} 
+                    margin={{ top: 5, right: 20, left: 20, bottom: 5 }}
+                  >
+                    <XAxis type="number" domain={[0, 100]} hide />
+                    <YAxis 
+                      dataKey="route" 
+                      type="category" 
+                      stroke="#94a3b8" 
+                      fontSize={10} 
+                      tickLine={false} 
+                      width={110}
+                    />
+                    <Tooltip 
+                      formatter={(val, name, item) => [`${val}% Congestion (${item.payload.speed})`, 'Index']}
+                      contentStyle={{ 
+                        backgroundColor: '#0d1120', 
+                        borderColor: '#1e2d45', 
+                        borderRadius: '8px', 
+                        fontSize: '11px',
+                        color: '#f1f5f9' 
+                      }} 
+                    />
+                    <Bar dataKey="congestion" radius={[0, 4, 4, 0]}>
+                      {CONGESTED_SEGMENTS.map((entry, index) => (
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={entry.congestion > 80 ? '#ef4444' : entry.congestion > 70 ? '#f59e0b' : '#3b82f6'} 
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Card 3: ANPR Engine Accuracy */}
+            <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h4 className="text-xs font-semibold text-[#f1f5f9]">
+                      ANPR Engine Accuracy
+                    </h4>
+                    <p className="text-[11px] text-[#64748b]">YOLOv8x + CRNN OCR Pipeline</p>
+                  </div>
+                  <div className="w-6 h-6 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-[#22c55e]">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  </div>
+                </div>
+
+                <div className="my-3">
+                  <div className="text-4xl font-extrabold font-mono text-[#22c55e] tracking-tight">
+                    94.2%
+                  </div>
+                  <p className="text-xs text-[#64748b] mt-1">
+                    142,830 plates scanned today
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-[#1e2d45] flex items-center justify-between text-xs font-mono">
+                <div className="space-y-0.5">
+                  <span className="text-[10px] text-[#64748b] uppercase tracking-wider block">CONFIDENCE</span>
+                  <span className="font-bold text-slate-200">0.96 Avg</span>
+                </div>
+                <div className="h-6 w-[1px] bg-[#1e2d45]" />
+                <div className="space-y-0.5 text-right">
+                  <span className="text-[10px] text-[#64748b] uppercase tracking-wider block">LATENCY</span>
+                  <span className="font-bold text-[#06b6d4]">18ms</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
