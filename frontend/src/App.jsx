@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import CountdownPage from './pages/CountdownPage';
@@ -14,8 +14,11 @@ import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 
 import ProtectedRoute from './components/ProtectedRoute';
+import AIAssistant from './components/AIAssistant';
 
 function App() {
+  const [aiOpen, setAiOpen] = useState(false);
+
   return (
     <Router>
       <Routes>
@@ -39,6 +42,29 @@ function App() {
         {/* Fallback Redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+
+      {/* ─── Floating AI Assistant ─────────────────────────────────── */}
+      <AIAssistant isOpen={aiOpen} onClose={() => setAiOpen(false)} />
+
+      {/* Floating toggle button */}
+      {!aiOpen && (
+        <button
+          id="ai-assistant-toggle"
+          onClick={() => setAiOpen(true)}
+          style={{
+            position: 'fixed', bottom: 24, right: 24, zIndex: 9998,
+            width: 56, height: 56, borderRadius: '50%', border: 'none',
+            background: 'linear-gradient(135deg, #3b82f6, #6366f1)',
+            boxShadow: '0 8px 32px rgba(59,130,246,0.5)',
+            cursor: 'pointer', fontSize: 24,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'transform 0.2s',
+          }}
+          title="Open AI Operations Assistant"
+        >
+          🤖
+        </button>
+      )}
     </Router>
   );
 }

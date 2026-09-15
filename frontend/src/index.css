@@ -50,7 +50,27 @@
   }
 }
 
-/* Leaflet dark mode overrides */
+/* ─── Leaflet + Tailwind Compatibility Fix ───────────────────────────────────
+   Tailwind Preflight sets img { max-width: 100%; display: block; }
+   which completely breaks Leaflet tile rendering (grey/white map).
+   These rules MUST come after @tailwind utilities to override them.           */
+
+.leaflet-container img,
+.leaflet-tile,
+.leaflet-tile-container img {
+  max-width: none !important;
+  display: inline !important;
+  box-shadow: none !important;
+}
+
+/* Fix for Leaflet marker icons broken by Tailwind */
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+  max-width: none !important;
+  display: inline-block !important;
+}
+
+/* Dark map background */
 .leaflet-container {
   background: #0a0d1a !important;
   font-family: 'Inter', sans-serif !important;

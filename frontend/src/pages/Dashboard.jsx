@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
+import CityMap from '../components/CityMap';
 import { 
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, 
   BarChart, Bar, Cell 
@@ -24,35 +23,8 @@ import {
   CONGESTED_SEGMENTS 
 } from '../data/mockData';
 
-// Custom Map Marker creator
-const createCameraIcon = (status, id) => {
-  const isOffline = status === 'offline';
-  return L.divIcon({
-    className: 'custom-leaflet-marker',
-    html: `
-      <div style="
-        width: 32px; 
-        height: 32px; 
-        border-radius: 50%; 
-        background: #0d1120; 
-        border: 2px solid ${isOffline ? '#f59e0b' : '#3b82f6'}; 
-        box-shadow: 0 0 12px ${isOffline ? 'rgba(245,158,11,0.6)' : 'rgba(59,130,246,0.6)'}; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        color: ${isOffline ? '#f59e0b' : '#3b82f6'}; 
-        font-family: monospace; 
-        font-size: 10px; 
-        font-weight: bold;
-      ">
-        ${id.replace('CAM-0', 'C')}
-      </div>
-    `,
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-    popupAnchor: [0, -18]
-  });
-};
+// (Google Maps CityMap component handles all map rendering)
+
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -197,59 +169,10 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Leaflet Map */}
-              <div className="w-full h-[360px] rounded-lg overflow-hidden border border-[#1e2d45] z-0">
-                <MapContainer
-                  center={[28.6139, 77.2090]}
-                  zoom={12}
-                  scrollWheelZoom={false}
-                  style={{ width: '100%', height: '100%' }}
-                >
-                  <TileLayer
-                    attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                  />
-                  {CAMERA_NODES.map((cam) => (
-                    <Marker
-                      key={cam.id}
-                      position={[cam.lat, cam.lng]}
-                      icon={createCameraIcon(cam.status, cam.id)}
-                    >
-                      <Popup>
-                        <div className="p-1 min-w-[200px] text-xs">
-                          <div className="flex items-center justify-between border-b border-[#1e2d45] pb-1.5 mb-1.5">
-                            <span className="font-bold text-[#06b6d4] font-mono">{cam.id}</span>
-                            <span
-                              className={`px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase ${
-                                cam.status === 'online'
-                                  ? 'bg-emerald-500/20 text-[#22c55e]'
-                                  : 'bg-amber-500/20 text-[#f59e0b]'
-                              }`}
-                            >
-                              {cam.status}
-                            </span>
-                          </div>
-                          <p className="font-semibold text-slate-200">{cam.name}</p>
-                          <div className="mt-2 space-y-1 text-slate-400 font-mono text-[11px]">
-                            <div className="flex justify-between">
-                              <span>Vehicles Logged:</span>
-                              <span className="text-slate-200">{cam.todayReads.toLocaleString()}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>Corridor Speed:</span>
-                              <span className="text-slate-200">{cam.lastSpeed} km/h</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>OCR Accuracy:</span>
-                              <span className="text-emerald-400">{cam.accuracy}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </Popup>
-                    </Marker>
-                  ))}
-                </MapContainer>
-              </div>
+
+              {/* Google Maps */}
+              <CityMap cameras={CAMERA_NODES} height={360} />
+
             </div>
 
             {/* ALERTS PANEL: 35% (4 cols) */}
