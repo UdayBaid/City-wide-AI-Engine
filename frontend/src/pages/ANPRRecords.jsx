@@ -92,9 +92,6 @@ export default function ANPRRecords() {
                   ANPR Telemetry & Detection Records
                 </h2>
               </div>
-              <p className="text-xs text-[#64748b] mt-1">
-                Real-time optical character recognition indexed from 8 Delhi surveillance nodes
-              </p>
             </div>
 
             <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
