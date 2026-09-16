@@ -16,7 +16,7 @@ export default function Settings() {
   const [speedTrigger, setSpeedTrigger] = useState(60);
   const [autoFlagCrimeHotlist, setAutoFlagCrimeHotlist] = useState(true);
   const [opticalTrackingFPS, setOpticalTrackingFPS] = useState('60');
-  const edgeDeviceCluster = 'BEL-EDGE-CLUSTER-NCR-01';
+  const edgeDeviceCluster = 'NCR-EDGE-CLUSTER-01';
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   const handleSave = (e) => {

@@ -1,4 +1,4 @@
-// Mock data for Bharat Electronics Limited (BEL) AI Traffic Surveillance System - SIH 2026
+// Mock data for City-Wide AI Traffic Surveillance System - SIH 2026
 
 export const CAMERA_NODES = [
   {

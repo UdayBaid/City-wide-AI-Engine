@@ -303,7 +303,7 @@ def chat(req: ChatRequest):
 
     # Step 2: Build system prompt
     system_prompt = f"""You are the AI Operations Assistant for the City-wide AI Traffic Surveillance Engine, 
-a BEL (Bharat Electronics Limited) system deployed across Delhi for SIH 2026.
+deployed across Delhi for SIH 2026.
 Your role is to help traffic operators with questions about protocols, camera statuses, 
 vehicle tracking, alerts, and traffic management.
 

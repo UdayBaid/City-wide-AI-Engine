@@ -33,7 +33,7 @@ export default function Reports() {
       setDownloadingId(null);
       // Mock triggering file download
       const element = document.createElement("a");
-      const file = new Blob([`BEL AI Traffic Surveillance - Forensic Report: ${rep.title}\nReport ID: ${rep.id}\nDate: ${rep.date}`], {type: 'text/plain'});
+      const file = new Blob([`AI Traffic Surveillance - Forensic Report: ${rep.title}\nReport ID: ${rep.id}\nDate: ${rep.date}`], {type: 'text/plain'});
       element.href = URL.createObjectURL(file);
       element.download = `${rep.id}_${rep.title.toLowerCase().replace(/\s+/g, '_')}.${rep.format.toLowerCase()}`;
       document.body.appendChild(element);

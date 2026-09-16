@@ -48,7 +48,7 @@ export default function Sidebar() {
               Traffic Command
             </h1>
             <p className="text-[11px] font-medium text-[#64748b] tracking-wider uppercase">
-              BEL · SIH 2026
+              SIH 2026
             </p>
           </div>
         </div>

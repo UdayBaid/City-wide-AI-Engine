@@ -113,7 +113,7 @@ export default function CountdownPage() {
           Urban Traffic Analytics System · Version 2.4.0
         </p>
         <p className="text-[11px] text-slate-500 font-mono mt-1">
-          Bharat Electronics Limited · SIH 2026
+          SIH 2026
         </p>
       </div>
     </div>

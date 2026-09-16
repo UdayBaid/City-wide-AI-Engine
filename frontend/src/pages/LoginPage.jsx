@@ -20,7 +20,7 @@ export default function LoginPage() {
 
     // Accept admin credentials or any demo entry
     const isValid =
-      (email.trim() === 'admin@bel.gov.in' && password === 'sih2026') ||
+      (email.trim() === 'admin@traffic.gov.in' && password === 'sih2026') ||
       (email.trim() === 'hello@drx.ai' && password === 'sih2026') ||
       (email.trim() && (password === 'sih2026' || password === 'admin' || password.length >= 4));
 

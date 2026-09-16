@@ -34,7 +34,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="City-wide AI Engine API",
-    description="FastAPI backend for the BEL Traffic Surveillance System (SIH 2026). Provides REST endpoints and an RAG-powered AI assistant.",
+    description="FastAPI backend for the City-Wide AI Traffic Surveillance System (SIH 2026). Provides REST endpoints and an RAG-powered AI assistant.",
     version="1.0.0",
     lifespan=lifespan,
 )
