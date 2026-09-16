@@ -90,9 +90,6 @@ export default function Reports() {
                   Intelligence & Forensic Audit Reports
                 </h2>
               </div>
-              <p className="text-xs text-[#64748b] mt-1">
-                Official statutory traffic intelligence, law enforcement dossiers & infrastructure analytics
-              </p>
             </div>
 
             <button

@@ -155,9 +155,6 @@ export default function Trajectories() {
                     Vehicle Trajectory Tracking
                   </h2>
                 </div>
-                <p className="text-xs text-[#64748b] mt-1">
-                  Multi-camera temporal trajectory correlation & route mapping
-                </p>
               </div>
 
               {/* Input & Track Form */}

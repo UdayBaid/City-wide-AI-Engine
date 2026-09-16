@@ -41,9 +41,6 @@ export default function Settings() {
                 Surveillance Platform Settings
               </h2>
             </div>
-            <p className="text-xs text-[#64748b] mt-1">
-              Tune AI detection confidence, neural models and automated violation alert triggers
-            </p>
           </div>
 
           {/* Form */}
@@ -80,9 +77,6 @@ export default function Settings() {
                     Faster-RCNN-ResNet101 (Legacy Reference)
                   </option>
                 </select>
-                <p className="text-[11px] text-[#64748b] mt-1">
-                  Selected neural backend executes inference on NVIDIA Jetson / Tesla T4 nodes.
-                </p>
               </div>
 
               {/* OCR Confidence Threshold Slider */}
@@ -103,9 +97,6 @@ export default function Settings() {
                   onChange={(e) => setConfidence(e.target.value)}
                   className="w-full max-w-md h-2 bg-[#0d1120] rounded-lg appearance-none cursor-pointer accent-[#3b82f6]"
                 />
-                <p className="text-[11px] text-[#64748b]">
-                  Plates detected below this probability threshold will be queued for manual forensic verification.
-                </p>
               </div>
             </div>
 
@@ -132,7 +123,7 @@ export default function Settings() {
                     onChange={(e) => setSpeedTrigger(e.target.value)}
                     className="w-32 p-2.5 bg-[#0d1120] border border-[#1e2d45] rounded-lg text-xs font-mono font-bold text-white focus:outline-none focus:border-[#3b82f6]"
                   />
-                  <span className="text-xs text-[#64748b]">km/h corridor upper velocity ceiling</span>
+                  <span className="text-xs text-[#64748b]">km/h</span>
                 </div>
               </div>
 

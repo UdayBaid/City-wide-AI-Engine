@@ -75,9 +75,6 @@ export default function Alerts() {
                   Active Real-Time Alerts
                 </h2>
               </div>
-              <p className="text-xs text-[#64748b] mt-1">
-                Automated ANPR blacklist hits, optical speed enforcement & grid anomalies
-              </p>
             </div>
 
             <div className="flex items-center gap-2">
@@ -166,7 +163,6 @@ export default function Alerts() {
                 <h3 className="text-sm font-semibold text-[#f1f5f9]">
                   Historical Incident Logs
                 </h3>
-                <p className="text-[11px] text-[#64748b]">Archived audit trail of resolved and logged incidents</p>
               </div>
 
               {/* Filter tabs */}

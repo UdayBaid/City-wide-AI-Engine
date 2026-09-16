@@ -66,9 +66,6 @@ export default function Analytics() {
                 City Traffic Analytics
               </h2>
             </div>
-            <p className="text-xs text-[#64748b] mt-1">
-              Historical trends, corridor velocity distribution & node health diagnostics
-            </p>
           </div>
 
           {/* ROW 1: 2 Charts */}
@@ -78,9 +75,8 @@ export default function Analytics() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-sm font-semibold text-[#f1f5f9]">
-                    Hourly Vehicle Volume (24 Hours)
+                    Hourly Vehicle Volume
                   </h3>
-                  <p className="text-[11px] text-[#64748b]">Metropolitan throughput aggregated across 8 nodes</p>
                 </div>
                 <span className="px-2.5 py-1 bg-blue-500/10 border border-blue-500/30 text-[#3b82f6] text-[10px] font-mono font-bold rounded">
                   24H METRIC
@@ -127,7 +123,6 @@ export default function Analytics() {
                   <h3 className="text-sm font-semibold text-[#f1f5f9]">
                     Corridor Velocity Distribution
                   </h3>
-                  <p className="text-[11px] text-[#64748b]">Real-time speed brackets captured by optical radar</p>
                 </div>
                 <span className="px-2.5 py-1 bg-cyan-500/10 border border-cyan-500/30 text-[#06b6d4] text-[10px] font-mono font-bold rounded">
                   RADAR SCAN
@@ -172,7 +167,7 @@ export default function Analytics() {
                   <div className="flex items-center gap-2">
                     <Flame className="w-4 h-4 text-[#f59e0b]" />
                     <h3 className="text-sm font-semibold text-[#f1f5f9]">
-                      Weekly Congestion Matrix (7 Days × 24h)
+                      Weekly Congestion Matrix
                     </h3>
                   </div>
                   <div className="flex items-center gap-2 text-[10px] font-mono">
@@ -280,7 +275,6 @@ export default function Analytics() {
                 <h3 className="text-sm font-semibold text-[#f1f5f9]">
                   Optical Sensor & Camera Node Performance
                 </h3>
-                <p className="text-[11px] text-[#64748b]">Hardware telemetry and optical accuracy matrix</p>
               </div>
               <span className="text-[11px] font-mono text-[#06b6d4]">LIVE TELEMETRY</span>
             </div>
