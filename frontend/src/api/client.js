@@ -75,6 +75,36 @@ const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message, history }),
     }).then(handleResponse),
+
+  // Authentication & Database Credential APIs
+  login: (identifier, password) =>
+    fetch(`${BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ identifier, password }),
+    }).then(handleResponse),
+
+  getRoles: () =>
+    fetch(`${BASE_URL}/auth/roles`).then(handleResponse),
+
+  getAuthMe: (token) => {
+    const authToken = token || localStorage.getItem('authToken');
+    return fetch(`${BASE_URL}/auth/me`, {
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+      },
+    }).then(handleResponse);
+  },
+
+  logout: (token) => {
+    const authToken = token || localStorage.getItem('authToken');
+    return fetch(`${BASE_URL}/auth/logout`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+      },
+    }).then(handleResponse).catch(() => ({ status: 'logged_out' }));
+  },
 };
 
 export default api;

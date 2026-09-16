@@ -7,14 +7,22 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from api.routes import router
 from api.stream import router as stream_router
+from api.auth import router as auth_router
 from rag.engine import build_index
+from db.auth_db import init_db
 
 load_dotenv(override=True)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Startup: build the RAG vector index. Shutdown: nothing to clean up."""
+    """Startup: initialize auth SQLite database and build RAG vector index."""
+    try:
+        init_db()
+        print("[INFO] Auth database initialized.")
+    except Exception as e:
+        print(f"[ERROR] Failed to initialize auth database: {e}")
+
     api_key = os.getenv("GEMINI_API_KEY")
     if api_key and api_key != "your_gemini_api_key_here":
         try:
@@ -33,7 +41,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="City-wide AI Engine API",
-    description="FastAPI backend for the City-Wide AI Traffic Surveillance System (SIH 2026). Provides REST endpoints and an RAG-powered AI assistant.",
+    description="FastAPI backend for the City-Wide AI Traffic Surveillance System (SIH 2026). Provides REST endpoints, secure SQLite database authentication, and an RAG-powered AI assistant.",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -53,6 +61,7 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(auth_router)
 app.include_router(stream_router, prefix="/api")
 
 
@@ -63,6 +72,10 @@ def root():
         "docs": "/docs",
         "endpoints": [
             "GET  /api/health",
+            "POST /api/auth/login",
+            "GET  /api/auth/roles",
+            "GET  /api/auth/me",
+            "POST /api/auth/logout",
             "GET  /api/cameras",
             "GET  /api/stream/{camera_id}",
             "GET  /api/frame/{camera_id}",

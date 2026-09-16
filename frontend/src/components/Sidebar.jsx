@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import api from '../api/client';
 import { 
   LayoutDashboard, 
   Video, 
@@ -27,11 +28,44 @@ const menuItems = [
   { name: 'Settings', path: '/settings', icon: Settings },
 ];
 
+const ROLE_COLORS = {
+  admin: '#06b6d4',
+  operator: '#22c55e',
+  analyst: '#a855f7',
+};
+
 export default function Sidebar() {
   const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem('currentUser');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    const handleStorage = () => {
+      try {
+        const stored = localStorage.getItem('currentUser');
+        setCurrentUser(stored ? JSON.parse(stored) : null);
+      } catch {
+        setCurrentUser(null);
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
 
   const handleSignOut = () => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      api.logout(token);
+    }
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUser');
     navigate('/login');
   };
 
@@ -77,19 +111,30 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {}
+      {/* User clearance and profile footer */}
       <div className="p-3 border-t border-[#1e2d45] bg-[#0d1120]/95">
-        <div className="flex items-center justify-between mb-3 px-1">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
+        <div className="flex items-center justify-between mb-3 px-1" title={currentUser?.department || 'Directorate of Traffic Control & AI Command'}>
+          <div className="flex items-center gap-2 overflow-hidden">
+            <span className="relative flex h-2 w-2 shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22c55e]"></span>
             </span>
-            <div className="leading-tight">
-              <p className="text-xs font-semibold text-[#f1f5f9] truncate">Command Admin</p>
-              <div className="flex items-center gap-1 mt-0.5">
-                <ShieldCheck className="w-3 h-3 text-[#06b6d4]" />
-                <span className="text-[10px] text-[#06b6d4] font-mono font-bold tracking-wider">SYS-ADMIN</span>
+            <div className="leading-tight overflow-hidden">
+              <p className="text-xs font-semibold text-[#f1f5f9] truncate">
+                {currentUser?.full_name || 'Dr. Rajesh Sharma'}
+              </p>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <ShieldCheck
+                  className="w-3 h-3 shrink-0"
+                  style={{ color: ROLE_COLORS[currentUser?.role?.toLowerCase()] || '#06b6d4' }}
+                />
+                <span
+                  className="text-[10px] font-mono font-bold tracking-wider uppercase truncate"
+                  style={{ color: ROLE_COLORS[currentUser?.role?.toLowerCase()] || '#06b6d4' }}
+                >
+                  {currentUser?.role ? currentUser.role.toUpperCase() : 'SYS-ADMIN'}
+                  {currentUser?.badge_id ? ` · ${currentUser.badge_id}` : ''}
+                </span>
               </div>
             </div>
           </div>

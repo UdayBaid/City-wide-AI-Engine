@@ -30,4 +30,6 @@ __pycache__/
 backend/venv/
 venv/
 *.log
+*.db
+*.sqlite3
 
