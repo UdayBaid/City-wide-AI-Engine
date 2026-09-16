@@ -50,9 +50,6 @@ export default function Vehicles() {
                   Vehicle Master Registry & Watchlist
                 </h2>
               </div>
-              <p className="text-xs text-[#64748b] mt-1">
-                Integrated VAHAN portal telemetry and high-priority surveillance vehicle records
-              </p>
             </div>
 
             <div className="flex items-center gap-2 font-mono text-xs text-slate-300">
