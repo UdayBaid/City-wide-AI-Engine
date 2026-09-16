@@ -28,14 +28,14 @@ router = APIRouter(prefix="/api")
 # In production, replace these with real DB queries.
 
 CAMERA_NODES = [
-    {"id": "CAM-01", "name": "Connaught Place Outer Circle (Connected to Backend!)", "shortName": "Connaught Place", "lat": 28.6315, "lng": 77.2167, "status": "online", "fps": 30, "resolution": "1080P/60FPS", "todayReads": 19420, "accuracy": "96.4%", "lastSeen": "Just now", "direction": "Radial-North", "videoSrc": "/videos/camera1.mp4", "lastPlate": "DL01AB1044", "lastSpeed": 38, "vehicleCount": 1420},
-    {"id": "CAM-02", "name": "India Gate C-Hexagon", "shortName": "India Gate", "lat": 28.6129, "lng": 77.2295, "status": "online", "fps": 30, "resolution": "4K/30FPS", "todayReads": 22180, "accuracy": "97.1%", "lastSeen": "Just now", "direction": "South-Circle", "videoSrc": "/videos/camera2.mp4", "lastPlate": "HR26BC4419", "lastSpeed": 42, "vehicleCount": 1890},
-    {"id": "CAM-03", "name": "ITO Junction Mathura Road", "shortName": "ITO Junction", "lat": 28.6262, "lng": 77.2410, "status": "online", "fps": 30, "resolution": "1080P/30FPS", "todayReads": 31450, "accuracy": "95.8%", "lastSeen": "Just now", "direction": "East-Corridor", "videoSrc": "/videos/camera3.mp4", "lastPlate": "DL03CC8899", "lastSpeed": 29, "vehicleCount": 2450},
-    {"id": "CAM-04", "name": "Karol Bagh Pusa Road", "shortName": "Karol Bagh", "lat": 28.6514, "lng": 77.1907, "status": "online", "fps": 30, "resolution": "1080P/30FPS", "todayReads": 16840, "accuracy": "94.9%", "lastSeen": "Just now", "direction": "West-Axial", "videoSrc": "/videos/camera4.mp4", "lastPlate": "UP16AK5522", "lastSpeed": 34, "vehicleCount": 1180},
-    {"id": "CAM-05", "name": "AIIMS Flyover Ring Road", "shortName": "AIIMS Flyover", "lat": 28.5672, "lng": 77.2100, "status": "online", "fps": 30, "resolution": "4K/30FPS", "todayReads": 28910, "accuracy": "98.2%", "lastSeen": "Just now", "direction": "South-Radial", "videoSrc": "/videos/camera5.mp4", "lastPlate": "DL08CX9901", "lastSpeed": 52, "vehicleCount": 2210},
-    {"id": "CAM-06", "name": "Dhaula Kuan Interchange", "shortName": "Dhaula Kuan", "lat": 28.5921, "lng": 77.1729, "status": "online", "fps": 30, "resolution": "1080P/60FPS", "todayReads": 24700, "accuracy": "96.7%", "lastSeen": "Just now", "direction": "Airport-Expressway", "videoSrc": "/videos/camera6.mp4", "lastPlate": "PB10XX1234", "lastSpeed": 50, "vehicleCount": 1960},
-    {"id": "CAM-07", "name": "Lajpat Nagar Ring Road", "shortName": "Lajpat Nagar", "lat": 28.5677, "lng": 77.2436, "status": "offline", "fps": 0, "resolution": "1080P/30FPS", "todayReads": 4210, "accuracy": "0.0%", "lastSeen": "14 mins ago", "direction": "South-East", "videoSrc": "/videos/camera7.mp4", "lastPlate": "N/A", "lastSpeed": 0, "vehicleCount": 0},
-    {"id": "CAM-08", "name": "Kashmiri Gate ISBT Junction", "shortName": "Kashmiri Gate", "lat": 28.6677, "lng": 77.2283, "status": "online", "fps": 30, "resolution": "1080P/60FPS", "todayReads": 27530, "accuracy": "96.1%", "lastSeen": "Just now", "direction": "North-Terminal", "videoSrc": "/videos/camera8.mp4", "lastPlate": "CH01TB9002", "lastSpeed": 92, "vehicleCount": 2130},
+    {"id": "CAM-01", "name": "Connaught Place Outer Circle", "shortName": "Connaught Place", "lat": 28.6315, "lng": 77.2167, "status": "online", "fps": 30, "resolution": "1080P/60FPS", "todayReads": 19420, "accuracy": "96.4%", "lastSeen": "Just now", "direction": "Radial-North", "videoSrc": "/videos/camera1.mp4", "streamUrl": "/api/stream/CAM-01", "frameUrl": "/api/frame/CAM-01", "lastPlate": "DL01AB1044", "lastSpeed": 38, "vehicleCount": 1420},
+    {"id": "CAM-02", "name": "India Gate C-Hexagon", "shortName": "India Gate", "lat": 28.6129, "lng": 77.2295, "status": "online", "fps": 30, "resolution": "4K/30FPS", "todayReads": 22180, "accuracy": "97.1%", "lastSeen": "Just now", "direction": "South-Circle", "videoSrc": "/videos/camera2.mp4", "streamUrl": "/api/stream/CAM-02", "frameUrl": "/api/frame/CAM-02", "lastPlate": "HR26BC4419", "lastSpeed": 42, "vehicleCount": 1890},
+    {"id": "CAM-03", "name": "ITO Junction Mathura Road", "shortName": "ITO Junction", "lat": 28.6262, "lng": 77.2410, "status": "online", "fps": 30, "resolution": "1080P/30FPS", "todayReads": 31450, "accuracy": "95.8%", "lastSeen": "Just now", "direction": "East-Corridor", "videoSrc": "/videos/camera3.mp4", "streamUrl": "/api/stream/CAM-03", "frameUrl": "/api/frame/CAM-03", "lastPlate": "DL03CC8899", "lastSpeed": 29, "vehicleCount": 2450},
+    {"id": "CAM-04", "name": "Karol Bagh Pusa Road", "shortName": "Karol Bagh", "lat": 28.6514, "lng": 77.1907, "status": "online", "fps": 30, "resolution": "1080P/30FPS", "todayReads": 16840, "accuracy": "94.9%", "lastSeen": "Just now", "direction": "West-Axial", "videoSrc": "/videos/camera4.mp4", "streamUrl": "/api/stream/CAM-04", "frameUrl": "/api/frame/CAM-04", "lastPlate": "UP16AK5522", "lastSpeed": 34, "vehicleCount": 1180},
+    {"id": "CAM-05", "name": "AIIMS Flyover Ring Road", "shortName": "AIIMS Flyover", "lat": 28.5672, "lng": 77.2100, "status": "online", "fps": 30, "resolution": "4K/30FPS", "todayReads": 28910, "accuracy": "98.2%", "lastSeen": "Just now", "direction": "South-Radial", "videoSrc": "/videos/camera5.mp4", "streamUrl": "/api/stream/CAM-05", "frameUrl": "/api/frame/CAM-05", "lastPlate": "DL08CX9901", "lastSpeed": 52, "vehicleCount": 2210},
+    {"id": "CAM-06", "name": "Dhaula Kuan Interchange", "shortName": "Dhaula Kuan", "lat": 28.5921, "lng": 77.1729, "status": "online", "fps": 30, "resolution": "1080P/60FPS", "todayReads": 24700, "accuracy": "96.7%", "lastSeen": "Just now", "direction": "Airport-Expressway", "videoSrc": "/videos/camera6.mp4", "streamUrl": "/api/stream/CAM-06", "frameUrl": "/api/frame/CAM-06", "lastPlate": "PB10XX1234", "lastSpeed": 50, "vehicleCount": 1960},
+    {"id": "CAM-07", "name": "Lajpat Nagar Ring Road", "shortName": "Lajpat Nagar", "lat": 28.5677, "lng": 77.2436, "status": "offline", "fps": 0, "resolution": "1080P/30FPS", "todayReads": 4210, "accuracy": "0.0%", "lastSeen": "14 mins ago", "direction": "South-East", "videoSrc": "/videos/camera7.mp4", "streamUrl": "/api/stream/CAM-07", "frameUrl": "/api/frame/CAM-07", "lastPlate": "N/A", "lastSpeed": 0, "vehicleCount": 0},
+    {"id": "CAM-08", "name": "Kashmiri Gate ISBT Junction", "shortName": "Kashmiri Gate", "lat": 28.6677, "lng": 77.2283, "status": "online", "fps": 30, "resolution": "1080P/60FPS", "todayReads": 27530, "accuracy": "96.1%", "lastSeen": "Just now", "direction": "North-Terminal", "videoSrc": "/videos/camera8.mp4", "streamUrl": "/api/stream/CAM-08", "frameUrl": "/api/frame/CAM-08", "lastPlate": "CH01TB9002", "lastSpeed": 92, "vehicleCount": 2130},
 ]
 
 ACTIVE_ALERTS = [
@@ -105,6 +105,60 @@ CONGESTED_SEGMENTS = [
     {"route": "Barakhamba Road", "congestion": 65, "speed": "30 km/h"},
 ]
 
+VELOCITY_DISTRIBUTION = [
+    {"bracket": "0-20 km/h", "count": 3420, "label": "Crawling / Gridlock"},
+    {"bracket": "20-40 km/h", "count": 5890, "label": "Urban Flow"},
+    {"bracket": "40-60 km/h", "count": 4720, "label": "Normal Velocity"},
+    {"bracket": "60-80 km/h", "count": 1820, "label": "High Speed"},
+    {"bracket": "80+ km/h", "count": 480, "label": "Speed Violations"},
+]
+
+TOP_OD_CORRIDORS = [
+    {"corridor": "Kashmiri Gate → AIIMS", "volume": 18420},
+    {"corridor": "Dhaula Kuan → Connaught Place", "volume": 16950},
+    {"corridor": "ITO → Karol Bagh", "volume": 14810},
+    {"corridor": "Lajpat Nagar → India Gate", "volume": 13620},
+    {"corridor": "Karol Bagh → Connaught Place", "volume": 12450},
+    {"corridor": "AIIMS → Dhaula Kuan", "volume": 11890},
+    {"corridor": "ISBT → Connaught Place", "volume": 10450},
+    {"corridor": "India Gate → AIIMS", "volume": 9870},
+    {"corridor": "Karol Bagh → Dhaula Kuan", "volume": 8940},
+    {"corridor": "ITO → Kashmiri Gate", "volume": 8320},
+]
+
+DAYS_OF_WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+WEEKLY_CONGESTION_MATRIX = []
+for d_idx, day in enumerate(DAYS_OF_WEEK):
+    hours = []
+    for h in range(24):
+        level = "low"
+        if (8 <= h <= 11) or (17 <= h <= 21):
+            if d_idx < 5:
+                level = "critical" if h in (9, 10, 18, 19) else "high"
+            else:
+                level = "high" if 18 <= h <= 21 else "normal"
+        elif (12 <= h <= 16) or (7 <= h <= 8):
+            level = "normal"
+        hours.append({"hour": h, "level": level})
+    WEEKLY_CONGESTION_MATRIX.append({"day": day, "hours": hours})
+
+TRAJECTORY_TARGET = {
+    "plate": "PB10XX1234",
+    "model": "Hyundai Verna (White)",
+    "owner": "Gurpreet S. (Ludhiana)",
+    "category": "Sedan / Light Motor Vehicle",
+    "totalDistance": "18.4 km",
+    "duration": "38 mins",
+    "avgSpeed": "39.2 km/h",
+    "status": "Active Surveillance",
+    "nodes": [
+        {"camera": "CAM-06", "location": "Dhaula Kuan", "time": "14:10", "speed": "50 km/h", "direction": "North-East", "lat": 28.5921, "lng": 77.1729, "status": "Normal"},
+        {"camera": "CAM-04", "location": "Karol Bagh", "time": "14:22", "speed": "36 km/h", "direction": "East", "lat": 28.6514, "lng": 77.1907, "status": "Congested Corridor"},
+        {"camera": "CAM-01", "location": "Connaught Place", "time": "14:35", "speed": "31 km/h", "direction": "South-East", "lat": 28.6315, "lng": 77.2167, "status": "Radial Zone"},
+        {"camera": "CAM-02", "location": "India Gate", "time": "14:48", "speed": "42 km/h", "direction": "South", "lat": 28.6129, "lng": 77.2295, "status": "Target Intercept Ready"},
+    ]
+}
+
 REPORTS_LIST = [
     {"id": "REP-001", "title": "Daily Urban Traffic & Congestion Digest", "date": "2026-09-14 06:00", "format": "PDF", "size": "2.4 MB", "category": "Operations"},
     {"id": "REP-002", "title": "ANPR Hotlist Surveillance & Blacklist Hits", "date": "2026-09-14 05:30", "format": "PDF", "size": "1.1 MB", "category": "Law Enforcement"},
@@ -152,12 +206,66 @@ def get_alerts():
     }
 
 
+@router.post("/alerts/{alert_id}/resolve")
+def resolve_alert(alert_id: str):
+    global ACTIVE_ALERTS, HISTORICAL_INCIDENTS
+    matched = next((a for a in ACTIVE_ALERTS if a["id"] == alert_id), None)
+    if matched:
+        ACTIVE_ALERTS = [a for a in ACTIVE_ALERTS if a["id"] != alert_id]
+        HISTORICAL_INCIDENTS.insert(0, {
+            "id": f"INC-{int(datetime.utcnow().timestamp()) % 900 + 100}",
+            "severity": matched["severity"],
+            "type": matched["type"],
+            "description": matched["title"],
+            "camera": matched["camera"],
+            "timestamp": "Just now",
+            "status": "Resolved"
+        })
+        return {"status": "resolved", "alert": matched}
+    return {"status": "not_found", "detail": f"Alert {alert_id} not found"}
+
+
 @router.get("/traffic")
 def get_traffic():
     return {
         "flow24h": TRAFFIC_FLOW_24H,
         "congestedSegments": CONGESTED_SEGMENTS,
+        "velocityDistribution": VELOCITY_DISTRIBUTION,
+        "topOdCorridors": TOP_OD_CORRIDORS,
+        "weeklyCongestionMatrix": WEEKLY_CONGESTION_MATRIX,
     }
+
+
+@router.get("/trajectories")
+def get_trajectories(plate: str | None = None):
+    if plate and plate.upper() != TRAJECTORY_TARGET["plate"].upper():
+        matching_anpr = [r for r in ANPR_RECORDS if r["plate"].upper() == plate.upper()]
+        if matching_anpr:
+            nodes = []
+            for r in matching_anpr:
+                cam = next((c for c in CAMERA_NODES if c["id"] == r["camera"]), None)
+                nodes.append({
+                    "camera": r["camera"],
+                    "location": r["location"],
+                    "time": r["timestamp"],
+                    "speed": r["speed"],
+                    "direction": cam["direction"] if cam else "Corridor",
+                    "lat": cam["lat"] if cam else 28.6139,
+                    "lng": cam["lng"] if cam else 77.2090,
+                    "status": r["status"]
+                })
+            return {
+                "plate": plate.upper(),
+                "model": matching_anpr[0]["vehicleModel"],
+                "owner": "Registered Owner (DL VAHAN)",
+                "category": "Motor Vehicle",
+                "totalDistance": f"{len(nodes) * 4.2:.1f} km",
+                "duration": f"{len(nodes) * 12} mins",
+                "avgSpeed": "38.5 km/h",
+                "status": "Active Surveillance",
+                "nodes": nodes
+            }
+    return TRAJECTORY_TARGET
 
 
 @router.get("/vehicles")

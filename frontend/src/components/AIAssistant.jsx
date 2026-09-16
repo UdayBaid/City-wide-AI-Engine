@@ -1,13 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import api from '../api/client';
 
-/**
- * AIAssistant — RAG-powered floating chat panel
- * ================================================
- * Connects to POST /api/chat on the FastAPI backend.
- * Shows message history, typing indicator, source citations.
- */
-
 const SUGGESTIONS = [
   "What is the protocol for a blacklisted vehicle?",
   "Which cameras are currently offline?",
@@ -20,7 +13,7 @@ export default function AIAssistant({ isOpen, onClose }) {
   const [messages, setMessages] = useState([
     {
       role: 'model',
-      parts: "Hello! I'm the City-wide AI Operations Assistant 🚦\nI can help you with camera protocols, alert procedures, traffic analysis, and vehicle tracking. How can I assist you?",
+      parts: "Hello! I'm the City-wide AI Operations Assistant \nI can help you with camera protocols, alert procedures, traffic analysis, and vehicle tracking. How can I assist you?",
       sources: [],
     },
   ]);

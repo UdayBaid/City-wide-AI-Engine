@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { 
   MapPin, 
@@ -13,6 +13,37 @@ import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
 import { TRAJECTORY_TARGET } from '../data/mockData';
 import api from '../api/client';
+
+// Helper component to invalidate Leaflet container size on mount to prevent grey/white rendering
+function MapResizer() {
+  const map = useMap();
+  useEffect(() => {
+    map.invalidateSize();
+    const t1 = setTimeout(() => map.invalidateSize(), 150);
+    const t2 = setTimeout(() => map.invalidateSize(), 600);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [map]);
+  return null;
+}
+
+// Helper to fit map bounds to current vehicle trajectory
+function MapBoundsFitter({ positions }) {
+  const map = useMap();
+  useEffect(() => {
+    if (positions && positions.length > 0) {
+      try {
+        const bounds = L.latLngBounds(positions);
+        map.fitBounds(bounds, { padding: [60, 60], maxZoom: 13 });
+      } catch (err) {
+        console.warn("fitBounds error:", err);
+      }
+    }
+  }, [map, positions]);
+  return null;
+}
 
 // Map markers
 const createNodeIcon = (camId, isPathNode, nodeIndex) => {
@@ -74,18 +105,31 @@ export default function Trajectories() {
   const [searchDate, setSearchDate] = useState('2026-09-14');
   const [target, setTarget] = useState(TRAJECTORY_TARGET);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const [mapStyle, setMapStyle] = useState('tactical'); // 'tactical' | 'osm_dark'
 
   useEffect(() => {
     api.getCameras().then(data => setCameras(data.cameras || []));
+    api.getTrajectories(searchPlate)
+      .then(data => {
+        if (data && data.nodes) setTarget(data);
+      })
+      .catch(err => console.error("Failed to load trajectory:", err));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Path coordinates for polyline: CAM-06 -> CAM-04 -> CAM-01 -> CAM-02
-  const pathPositions = target.nodes.map((n) => [n.lat, n.lng]);
+  const pathPositions = (target.nodes || []).map((n) => [n.lat, n.lng]);
 
   const handleTrack = (e) => {
     e.preventDefault();
-    // Default mock target reload
-    setTarget(TRAJECTORY_TARGET);
+    api.getTrajectories(searchPlate)
+      .then(data => {
+        if (data && data.nodes) setTarget(data);
+      })
+      .catch(err => {
+        console.error("Failed to track plate:", err);
+        setTarget(TRAJECTORY_TARGET);
+      });
   };
 
   const handleExportPDF = () => {
@@ -171,17 +215,34 @@ export default function Trajectories() {
               </div>
 
               {/* Map */}
-              <div className="w-full h-[520px] rounded-lg overflow-hidden border border-[#1e2d45] relative">
+              <div className="w-full h-[520px] rounded-lg overflow-hidden border border-[#1e2d45] relative bg-[#070a14]">
                 <MapContainer
                   center={[28.6180, 77.2100]}
                   zoom={12}
-                  scrollWheelZoom={false}
-                  style={{ width: '100%', height: '100%' }}
+                  scrollWheelZoom={true}
+                  style={{ width: '100%', height: '100%', backgroundColor: '#070a14' }}
                 >
-                  <TileLayer
-                    attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-                    url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-                  />
+                  <MapResizer />
+                  <MapBoundsFitter positions={pathPositions} />
+
+                  {/* 100% Free Watermark-Free Dark Surveillance Basemaps — No API Key Required */}
+                  {mapStyle === 'tactical' ? (
+                    <TileLayer
+                      key="osm-tactical-dark"
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      className="dark-tactical-tiles"
+                      maxZoom={19}
+                    />
+                  ) : (
+                    <TileLayer
+                      key="esri-satellite"
+                      attribution='&copy; Esri &copy; Earthstar Geographics'
+                      url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                      className="night-satellite-tiles"
+                      maxZoom={18}
+                    />
+                  )}
 
                   {/* Connecting dashed polyline */}
                   <Polyline
@@ -189,7 +250,7 @@ export default function Trajectories() {
                     pathOptions={{
                       color: '#06b6d4',
                       weight: 4,
-                      opacity: 0.85,
+                      opacity: 0.9,
                       dashArray: '8, 8',
                       lineCap: 'round'
                     }}
@@ -197,7 +258,7 @@ export default function Trajectories() {
 
                   {/* Render All 8 Cameras with special style for target path */}
                   {cameras.map((cam) => {
-                    const nodeIndex = target.nodes.findIndex((n) => n.camera === cam.id);
+                    const nodeIndex = (target.nodes || []).findIndex((n) => n.camera === cam.id);
                     const isPathNode = nodeIndex !== -1;
                     const pathDetails = isPathNode ? target.nodes[nodeIndex] : null;
 
@@ -208,15 +269,16 @@ export default function Trajectories() {
                         icon={createNodeIcon(cam.id, isPathNode, nodeIndex)}
                       >
                         <Popup>
-                          <div className="p-1 min-w-[190px] text-xs font-sans">
+                          <div className="p-1 min-w-[210px] text-xs font-sans">
                             <div className="flex items-center justify-between border-b border-[#1e2d45] pb-1 mb-1.5">
                               <span className="font-mono font-bold text-[#06b6d4]">{cam.id}</span>
                               <span className="text-[10px] text-slate-400">{cam.shortName}</span>
                             </div>
                             {isPathNode ? (
                               <div className="space-y-1 font-mono text-[11px]">
-                                <div className="text-emerald-400 font-bold">
-                                  Sequence Checkpoint #{nodeIndex + 1}
+                                <div className="text-emerald-400 font-bold flex items-center justify-between">
+                                  <span>Checkpoint #{nodeIndex + 1}</span>
+                                  <span className="text-[10px] text-cyan-300">INTERCEPT</span>
                                 </div>
                                 <div className="flex justify-between">
                                   <span className="text-slate-400">Timestamp:</span>
@@ -232,7 +294,22 @@ export default function Trajectories() {
                                 </div>
                               </div>
                             ) : (
-                              <p className="text-[11px] text-[#64748b]">No detection match for target</p>
+                              <p className="text-[11px] text-[#64748b]">Surveillance Node · Active Optical Scanner</p>
+                            )}
+
+                            {/* Embedded Live Camera Feed Stream Preview */}
+                            {cam.status === 'online' && (
+                              <div className="mt-2 rounded overflow-hidden border border-[#1e2d45] bg-black">
+                                <img
+                                  src={api.getStreamUrl(cam.id)}
+                                  alt={cam.name}
+                                  className="w-full h-20 object-cover"
+                                />
+                                <div className="p-1 bg-[#0d1120] text-[9px] font-mono text-cyan-400 flex items-center justify-between">
+                                  <span>LIVE CAM FEED</span>
+                                  <span className="text-emerald-400">{cam.fps || 30} FPS</span>
+                                </div>
+                              </div>
                             )}
                           </div>
                         </Popup>
@@ -240,6 +317,26 @@ export default function Trajectories() {
                     );
                   })}
                 </MapContainer>
+
+                {/* Dark Theme & Layer Controls (Zero API Key, Zero Watermark) */}
+                <div className="absolute top-3 left-3 z-[1000] flex items-center gap-1.5 bg-[#0d1120]/90 backdrop-blur-md border border-[#1e2d45] p-1 rounded-lg text-[10px] font-mono">
+                  <button
+                    onClick={() => setMapStyle('tactical')}
+                    className={`px-2.5 py-1 rounded transition-colors ${
+                      mapStyle === 'tactical' ? 'bg-[#06b6d4] text-black font-bold' : 'text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    Tactical Dark
+                  </button>
+                  <button
+                    onClick={() => setMapStyle('satellite')}
+                    className={`px-2.5 py-1 rounded transition-colors ${
+                      mapStyle === 'satellite' ? 'bg-[#06b6d4] text-black font-bold' : 'text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    Night Satellite
+                  </button>
+                </div>
 
                 {/* Trajectory legend pill on top of map */}
                 <div className="absolute top-3 right-3 z-[1000] bg-[#0d1120]/90 backdrop-blur-md border border-[#1e2d45] p-2.5 rounded-lg text-[10px] font-mono space-y-1">

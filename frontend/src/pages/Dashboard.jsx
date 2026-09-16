@@ -35,12 +35,19 @@ export default function Dashboard() {
   const [cameras, setCameras] = useState([]);
   const [trafficFlow, setTrafficFlow] = useState([]);
   const [congestedSegments, setCongestedSegments] = useState([]);
+  const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
     api.getCameras().then(data => setCameras(data.cameras || []));
     api.getTraffic().then(data => {
       setTrafficFlow(data.flow24h || []);
       setCongestedSegments(data.congestedSegments || []);
+    });
+    api.getAlerts().then(data => {
+      if (data && data.active) {
+        setAlerts(data.active);
+        setStats(prev => ({ ...prev, activeAlerts: data.active.length }));
+      }
     });
   }, []);
   useEffect(() => {
@@ -199,57 +206,45 @@ export default function Dashboard() {
 
                 {/* Alert Items */}
                 <div className="space-y-2.5">
-                  {/* Item 1: Red border */}
-                  <div className="p-3 bg-[#0d1120] border-l-4 border-l-[#ef4444] border border-[#1e2d45] rounded-r-lg">
-                    <div className="flex justify-between items-start">
-                      <span className="text-xs font-bold text-red-400">
-                        Blacklisted Vehicle — DL08CX9901
-                      </span>
-                      <span className="text-[10px] text-[#64748b] font-mono">2m ago</span>
-                    </div>
-                    <p className="text-[11px] text-[#64748b] mt-1">
-                      Detected at AIIMS Flyover (CAM-05). Stolen vehicle FIR match.
-                    </p>
-                  </div>
+                  {alerts.slice(0, 4).map((alert) => {
+                    const isCrit = alert.severity === 'critical';
+                    const isWarn = alert.severity === 'warning';
+                    const borderClass = isCrit
+                      ? 'border-l-4 border-l-[#ef4444]'
+                      : isWarn
+                      ? 'border-l-4 border-l-[#f59e0b]'
+                      : 'border-l-4 border-l-[#3b82f6]';
+                    const titleColor = isCrit
+                      ? 'text-red-400'
+                      : isWarn
+                      ? 'text-amber-400'
+                      : 'text-blue-400';
 
-                  {/* Item 2: Orange border */}
-                  <div className="p-3 bg-[#0d1120] border-l-4 border-l-[#f59e0b] border border-[#1e2d45] rounded-r-lg">
-                    <div className="flex justify-between items-start">
-                      <span className="text-xs font-bold text-amber-400">
-                        Severe Speeding — HR26DQ5521
-                      </span>
-                      <span className="text-[10px] text-[#64748b] font-mono">6m ago</span>
-                    </div>
-                    <p className="text-[11px] text-[#64748b] mt-1">
-                      85 km/h recorded in 50 km/h zone at ITO Junction.
-                    </p>
-                  </div>
+                    return (
+                      <div
+                        key={alert.id}
+                        className={`p-3 bg-[#0d1120] ${borderClass} border border-[#1e2d45] rounded-r-lg`}
+                      >
+                        <div className="flex justify-between items-start">
+                          <span className={`text-xs font-bold ${titleColor}`}>
+                            {alert.title}
+                          </span>
+                          <span className="text-[10px] text-[#64748b] font-mono shrink-0 ml-2">
+                            {alert.timestamp}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[#64748b] mt-1 line-clamp-2">
+                          {alert.description}
+                        </p>
+                      </div>
+                    );
+                  })}
 
-                  {/* Item 3: Orange border */}
-                  <div className="p-3 bg-[#0d1120] border-l-4 border-l-[#f59e0b] border border-[#1e2d45] rounded-r-lg">
-                    <div className="flex justify-between items-start">
-                      <span className="text-xs font-bold text-amber-400">
-                        Overspeed — CH01TB9002
-                      </span>
-                      <span className="text-[10px] text-[#64748b] font-mono">12m ago</span>
+                  {alerts.length === 0 && (
+                    <div className="p-4 text-center text-xs text-[#64748b]">
+                      No active critical alerts recorded.
                     </div>
-                    <p className="text-[11px] text-[#64748b] mt-1">
-                      92 km/h at ISBT North Terminal approach corridor.
-                    </p>
-                  </div>
-
-                  {/* Item 4: Blue border */}
-                  <div className="p-3 bg-[#0d1120] border-l-4 border-l-[#3b82f6] border border-[#1e2d45] rounded-r-lg">
-                    <div className="flex justify-between items-start">
-                      <span className="text-xs font-bold text-blue-400">
-                        Camera Offline — CAM-07
-                      </span>
-                      <span className="text-[10px] text-[#64748b] font-mono">14m ago</span>
-                    </div>
-                    <p className="text-[11px] text-[#64748b] mt-1">
-                      Heartbeat timeout on Lajpat Nagar Ring Road.
-                    </p>
-                  </div>
+                  )}
                 </div>
               </div>
 

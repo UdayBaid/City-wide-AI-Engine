@@ -70,10 +70,28 @@
   display: inline-block !important;
 }
 
-/* Dark map background */
+/* Dark map background & tile styling */
 .leaflet-container {
-  background: #0a0d1a !important;
+  background: #070a14 !important;
+  background-color: #070a14 !important;
   font-family: 'Inter', sans-serif !important;
+  outline: none;
+}
+
+.leaflet-tile-pane {
+  background: #070a14 !important;
+}
+
+/* Tactical Cyber Dark: Inverts free OpenStreetMap vectors into a sleek dark-mode surveillance grid with ZERO watermarks */
+.dark-tactical-tiles .leaflet-tile,
+.dark-tactical-tiles img {
+  filter: invert(100%) hue-rotate(180deg) brightness(85%) contrast(125%) !important;
+}
+
+/* Night Tactical Satellite (Esri ArcGIS) */
+.night-satellite-tiles .leaflet-tile,
+.night-satellite-tiles img {
+  filter: brightness(0.68) contrast(1.35) saturate(0.85) !important;
 }
 
 .leaflet-popup-content-wrapper {

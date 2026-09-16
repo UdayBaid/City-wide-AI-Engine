@@ -34,9 +34,19 @@ const getMatrixCellColor = (level) => {
 export default function Analytics() {
   const [trafficFlow, setTrafficFlow] = useState([]);
   const [cameras, setCameras] = useState([]);
+  const [velocityDistribution, setVelocityDistribution] = useState(VELOCITY_DISTRIBUTION);
+  const [weeklyMatrix, setWeeklyMatrix] = useState(WEEKLY_CONGESTION_MATRIX);
+  const [topCorridors, setTopCorridors] = useState(TOP_OD_CORRIDORS);
 
   useEffect(() => {
-    api.getTraffic().then(data => setTrafficFlow(data.flow24h || []));
+    api.getTraffic().then(data => {
+      if (data) {
+        if (data.flow24h) setTrafficFlow(data.flow24h);
+        if (data.velocityDistribution) setVelocityDistribution(data.velocityDistribution);
+        if (data.weeklyCongestionMatrix) setWeeklyMatrix(data.weeklyCongestionMatrix);
+        if (data.topOdCorridors) setTopCorridors(data.topOdCorridors);
+      }
+    }).catch(err => console.error("Failed to load traffic analytics:", err));
     api.getCameras().then(data => setCameras(data.cameras || []));
   }, []);
 
@@ -126,7 +136,7 @@ export default function Analytics() {
 
               <div className="h-60 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={VELOCITY_DISTRIBUTION} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
+                  <BarChart data={velocityDistribution} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
                     <XAxis dataKey="bracket" stroke="#64748b" fontSize={10} tickLine={false} />
                     <YAxis stroke="#64748b" fontSize={10} tickLine={false} />
                     <Tooltip 
@@ -140,7 +150,7 @@ export default function Analytics() {
                       }} 
                     />
                     <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                      {VELOCITY_DISTRIBUTION.map((entry, index) => (
+                      {velocityDistribution.map((entry, index) => (
                         <Cell 
                           key={`cell-vel-${index}`} 
                           fill={index === 4 ? '#ef4444' : index === 3 ? '#f59e0b' : '#06b6d4'} 
@@ -191,7 +201,7 @@ export default function Analytics() {
                     ))}
                   </div>
 
-                  {WEEKLY_CONGESTION_MATRIX.map((row) => (
+                  {weeklyMatrix.map((row) => (
                     <div key={row.day} className="flex items-center gap-1.5">
                       <span className="w-8 text-[11px] font-mono text-[#64748b] font-medium shrink-0">
                         {row.day}
@@ -234,7 +244,7 @@ export default function Analytics() {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     layout="vertical"
-                    data={TOP_OD_CORRIDORS.slice(0, 7)}
+                    data={topCorridors.slice(0, 7)}
                     margin={{ top: 5, right: 20, left: 30, bottom: 5 }}
                   >
                     <XAxis type="number" stroke="#64748b" fontSize={9} tickLine={false} />

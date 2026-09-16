@@ -18,9 +18,24 @@ const handleResponse = async (res) => {
 };
 
 const api = {
+  /** API Base URL */
+  BASE_URL,
+
   /** Check backend health */
   health: () =>
     fetch(`${BASE_URL}/health`).then(handleResponse),
+
+  /** Get live stream URL for MJPEG camera feed */
+  getStreamUrl: (cameraId) =>
+    `${BASE_URL}/stream/${encodeURIComponent(cameraId)}`,
+
+  /** Get single snapshot JPEG frame URL */
+  getFrameUrl: (cameraId) =>
+    `${BASE_URL}/frame/${encodeURIComponent(cameraId)}`,
+
+  /** Get stream engine status */
+  getStreamStatus: () =>
+    fetch(`${BASE_URL}/stream/status`).then(handleResponse),
 
   /** Get all camera nodes */
   getCameras: () =>
@@ -30,9 +45,23 @@ const api = {
   getAlerts: () =>
     fetch(`${BASE_URL}/alerts`).then(handleResponse),
 
-  /** Get 24-hour traffic flow and congestion data */
+  /** Mark an alert as resolved on the backend */
+  resolveAlert: (alertId) =>
+    fetch(`${BASE_URL}/alerts/${encodeURIComponent(alertId)}/resolve`, {
+      method: 'POST',
+    }).then(handleResponse),
+
+  /** Get 24-hour traffic flow, congestion, and velocity distribution */
   getTraffic: () =>
     fetch(`${BASE_URL}/traffic`).then(handleResponse),
+
+  /** Get vehicle trajectory tracking telemetry */
+  getTrajectories: (plate = null) => {
+    const url = plate
+      ? `${BASE_URL}/trajectories?plate=${encodeURIComponent(plate)}`
+      : `${BASE_URL}/trajectories`;
+    return fetch(url).then(handleResponse);
+  },
 
   /** Get ANPR records and vehicle database. Optionally filter by plate. */
   getVehicles: (plate = null) => {

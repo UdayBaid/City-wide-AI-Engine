@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.routes import router
+from api.stream import router as stream_router
 from rag.engine import build_index
 
 # Load environment variables from .env file
@@ -56,6 +57,7 @@ app.add_middleware(
 
 # ─── Routers ─────────────────────────────────────────────────────────────────
 app.include_router(router)
+app.include_router(stream_router, prefix="/api")
 
 
 @app.get("/")
@@ -66,9 +68,13 @@ def root():
         "endpoints": [
             "GET  /api/health",
             "GET  /api/cameras",
+            "GET  /api/stream/{camera_id}",
+            "GET  /api/frame/{camera_id}",
+            "GET  /api/stream/status",
             "GET  /api/alerts",
             "GET  /api/traffic",
             "GET  /api/vehicles",
+            "GET  /api/trajectories",
             "GET  /api/reports",
             "POST /api/chat",
         ]

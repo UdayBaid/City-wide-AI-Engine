@@ -10,6 +10,7 @@ import Topbar from '../components/Topbar';
 import api from '../api/client';
 
 export default function ANPRRecords() {
+  const navigate = useNavigate();
   const [allRecords, setAllRecords] = useState([]);
   const [cameras, setCameras] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');

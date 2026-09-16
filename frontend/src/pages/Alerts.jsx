@@ -27,6 +27,9 @@ export default function Alerts() {
     const resolvedItem = activeAlerts.find((a) => a.id === alertId);
     if (!resolvedItem) return;
 
+    // Call backend endpoint to resolve
+    api.resolveAlert(alertId).catch((err) => console.warn("Backend resolve alert warning:", err));
+
     // Remove from active
     setActiveAlerts((prev) => prev.filter((a) => a.id !== alertId));
 
