@@ -9,7 +9,7 @@ from api.routes import router
 from api.stream import router as stream_router
 from rag.engine import build_index
 
-load_dotenv()
+load_dotenv(override=True)
 
 
 @asynccontextmanager
