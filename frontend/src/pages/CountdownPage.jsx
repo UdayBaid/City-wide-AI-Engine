@@ -15,14 +15,14 @@ export default function CountdownPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Reveal lines one by one every 800ms
+    
     const lineIntervals = [];
 
     BOOT_LOGS.forEach((log, index) => {
       const timeout = setTimeout(() => {
         setDisplayedLines((prev) => [...prev, log]);
 
-        // When the last line [READY] is shown, wait 800ms and navigate to /login
+        
         if (index === BOOT_LOGS.length - 1) {
           setTimeout(() => {
             navigate('/login');
@@ -33,7 +33,7 @@ export default function CountdownPage() {
       lineIntervals.push(timeout);
     });
 
-    // Animate progress bar from 0 to 100% over 5 seconds (5000ms)
+    
     const startTime = Date.now();
     const duration = 4800;
     const progressTimer = setInterval(() => {
@@ -53,9 +53,9 @@ export default function CountdownPage() {
 
   return (
     <div className="min-h-screen w-full bg-[#0a0d1a] flex flex-col items-center justify-center p-4 select-none font-mono">
-      {/* Terminal Card */}
+      {}
       <div className="w-full max-w-xl bg-[#111827] border border-[#1e2d45] rounded-xl shadow-2xl shadow-cyan-950/20 overflow-hidden">
-        {/* macOS style Title Bar */}
+        {}
         <div className="bg-[#0d1120] border-b border-[#1e2d45] px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full bg-[#ef4444] inline-block"></span>
@@ -70,7 +70,7 @@ export default function CountdownPage() {
           </div>
         </div>
 
-        {/* Terminal Body */}
+        {}
         <div className="p-6 space-y-3 min-h-[220px] bg-[#0a0d1a]/80">
           {displayedLines.map((line, idx) => (
             <div key={idx} className="flex items-start gap-2.5 text-xs tracking-wide leading-relaxed">
@@ -92,7 +92,7 @@ export default function CountdownPage() {
           )}
         </div>
 
-        {/* Progress Bar Section */}
+        {}
         <div className="p-6 bg-[#0d1120] border-t border-[#1e2d45] space-y-2">
           <div className="flex justify-between items-center text-xs">
             <span className="text-[#64748b] font-medium">System Boot Status</span>
@@ -107,7 +107,7 @@ export default function CountdownPage() {
         </div>
       </div>
 
-      {/* Bottom Version Text */}
+      {}
       <div className="mt-8 text-center">
         <p className="text-xs text-[#64748b] font-sans tracking-wide">
           Urban Traffic Analytics System · Version 2.4.0

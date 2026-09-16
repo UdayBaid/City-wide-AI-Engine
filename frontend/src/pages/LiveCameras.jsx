@@ -11,7 +11,7 @@ export default function LiveCameras() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [backendOnline, setBackendOnline] = useState(true);
 
-  // Fetch camera nodes from backend
+  
   const loadCameras = () => {
     setIsRefreshing(true);
     api.getCameras()
@@ -56,7 +56,7 @@ export default function LiveCameras() {
         <Topbar pageTitle="Live Cameras" />
 
         <main className="p-6 space-y-6 flex-1">
-          {/* Header section */}
+          {}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#111827] border border-[#1e2d45] rounded-xl p-5">
             <div>
               <div className="flex items-center gap-2">
@@ -87,7 +87,7 @@ export default function LiveCameras() {
             </div>
           </div>
 
-          {/* 2x4 Matrix Grid */}
+          {}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {cameras.map((cam, idx) => {
               const isOffline = cam.status === 'offline';
@@ -102,7 +102,7 @@ export default function LiveCameras() {
                     !isOffline ? 'hover:border-[#3b82f6]/70 hover:shadow-cyan-900/20 cursor-pointer' : ''
                   }`}
                 >
-                  {/* Top Bar */}
+                  {}
                   <div className="p-3 bg-[#0d1120] border-b border-[#1e2d45]">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5 truncate pr-2">
@@ -133,7 +133,7 @@ export default function LiveCameras() {
                     </div>
                   </div>
 
-                  {/* Video Area: Live Backend MJPEG Frame Stream */}
+                  {}
                   <div className="relative w-full h-[185px] bg-[#070a14] overflow-hidden flex items-center justify-center border-y border-[#1e2d45]/40 group">
                     {isOffline ? (
                       <div className="flex flex-col items-center justify-center p-4 text-center space-y-2">
@@ -147,7 +147,7 @@ export default function LiveCameras() {
                       </div>
                     ) : !hasFailed ? (
                       <div className="w-full h-full relative">
-                        {/* Live MJPEG frame from FastAPI backend */}
+                        {}
                         <img
                           src={streamUrl}
                           alt={cam.name}
@@ -156,7 +156,7 @@ export default function LiveCameras() {
                           loading="eager"
                         />
 
-                        {/* Top-right expand icon on hover */}
+                        {}
                         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/70 p-1.5 rounded-md border border-white/20 text-white">
                           <Maximize2 className="w-3.5 h-3.5" />
                         </div>
@@ -180,7 +180,7 @@ export default function LiveCameras() {
                     )}
                   </div>
 
-                  {/* Bottom Bar: Telemetry */}
+                  {}
                   <div className="p-3 bg-[#0d1120] text-xs">
                     <div className="flex items-center justify-between font-mono">
                       <span className="text-[11px] text-[#64748b]">Last Plate Read:</span>
@@ -199,11 +199,11 @@ export default function LiveCameras() {
             })}
           </div>
 
-          {/* Full Screen Live Feed Inspection Modal */}
+          {}
           {selectedCamera && (
             <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
               <div className="bg-[#111827] border border-[#1e2d45] rounded-2xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col">
-                {/* Modal Header */}
+                {}
                 <div className="p-4 bg-[#0d1120] border-b border-[#1e2d45] flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-blue-500/10 border border-blue-500/20 rounded-lg text-blue-400">
@@ -230,7 +230,7 @@ export default function LiveCameras() {
                   </button>
                 </div>
 
-                {/* Modal Video Player */}
+                {}
                 <div className="relative w-full aspect-video bg-black flex items-center justify-center overflow-hidden">
                   <img
                     src={api.getStreamUrl(selectedCamera.id)}
@@ -243,7 +243,7 @@ export default function LiveCameras() {
                   </div>
                 </div>
 
-                {/* Modal Footer Telemetry */}
+                {}
                 <div className="p-4 bg-[#0d1120] border-t border-[#1e2d45] grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
                   <div>
                     <span className="text-[#64748b] block text-[10px]">READ ACCURACY</span>

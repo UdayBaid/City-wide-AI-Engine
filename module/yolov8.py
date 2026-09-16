@@ -4,9 +4,6 @@ import pandas as pd
 from ultralytics import YOLO
 
 
-# ==============================
-# CONFIGURATION
-# ==============================
 
 INPUT_DIR = Path("frames")
 OUTPUT_DIR = Path("yolo_output")
@@ -15,7 +12,6 @@ MODEL_PATH = "yolov8n.pt"
 
 CONFIDENCE = 0.40
 
-# COCO vehicle classes
 VEHICLE_CLASSES = {
     2: "car",
     3: "motorcycle",
@@ -24,9 +20,6 @@ VEHICLE_CLASSES = {
 }
 
 
-# ==============================
-# CREATE OUTPUT DIRECTORIES
-# ==============================
 
 OUTPUT_DIR.mkdir(
     parents=True,
@@ -41,16 +34,10 @@ ANNOTATED_DIR.mkdir(
 )
 
 
-# ==============================
-# LOAD YOLO MODEL
-# ==============================
 
 model = YOLO(MODEL_PATH)
 
 
-# ==============================
-# FIND FRAMES
-# ==============================
 
 image_extensions = {
     ".jpg",
@@ -73,9 +60,6 @@ if not frames:
     )
 
 
-# ==============================
-# DETECTION
-# ==============================
 
 detections = []
 
@@ -114,7 +98,6 @@ for frame_path in frames:
         )
 
 
-        # Only vehicles
         if class_id not in VEHICLE_CLASSES:
             continue
 
@@ -144,9 +127,6 @@ for frame_path in frames:
         )
 
 
-    # ==============================
-    # SAVE ANNOTATED FRAME
-    # ==============================
 
     annotated_frame = result.plot()
 
@@ -161,9 +141,6 @@ for frame_path in frames:
     )
 
 
-# ==============================
-# SAVE DETECTIONS
-# ==============================
 
 df = pd.DataFrame(
     detections
@@ -182,9 +159,6 @@ df.to_csv(
 )
 
 
-# ==============================
-# SUMMARY
-# ==============================
 
 print("YOLOv8 Vehicle Detection Complete")
 

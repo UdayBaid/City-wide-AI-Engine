@@ -9,7 +9,6 @@ Add new documents here to expand the system's knowledge.
 """
 
 KNOWLEDGE_BASE = [
-    # ---- Camera Operations ----
     {
         "topic": "cameras",
         "title": "Camera Network Overview",
@@ -35,7 +34,6 @@ KNOWLEDGE_BASE = [
             "CAM-07 (Lajpat Nagar) has historically experienced the most downtime due to power fluctuations."
         )
     },
-    # ---- Alerts & Incidents ----
     {
         "topic": "alerts",
         "title": "Alert Severity Levels",
@@ -74,7 +72,6 @@ KNOWLEDGE_BASE = [
             "Repeat violators (3+ violations in 30 days) are flagged for license suspension referral."
         )
     },
-    # ---- Traffic Management ----
     {
         "topic": "traffic",
         "title": "Peak Hour Congestion Management",
@@ -99,7 +96,6 @@ KNOWLEDGE_BASE = [
             "6. Log the event as 'INFO — VIP Convoy Movement'."
         )
     },
-    # ---- ANPR / Vehicles ----
     {
         "topic": "anpr",
         "title": "ANPR System Accuracy",
@@ -123,7 +119,6 @@ KNOWLEDGE_BASE = [
             "(Haryana, UP, Rajasthan) is available via the VAHAN-Link API for blacklisted vehicles."
         )
     },
-    # ---- System / Reports ----
     {
         "topic": "reports",
         "title": "Available Report Types",

@@ -21,12 +21,10 @@ from fastapi.responses import StreamingResponse
 
 router = APIRouter()
 
-# ─── Configuration & Frame Cache ─────────────────────────────────────────────
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 FRAMES_DIR = BASE_DIR / "frames_small" / "vdo"
 
-# Pre-indexed frame files sorted numerically
 FRAME_FILES = []
 if FRAMES_DIR.exists():
     FRAME_FILES = sorted(
@@ -36,7 +34,6 @@ if FRAMES_DIR.exists():
 
 TOTAL_FRAMES = len(FRAME_FILES)
 
-# Camera telemetry and stream parameters
 CAMERA_STREAM_PROFILES = {
     "CAM-01": {
         "name": "Connaught Place",
@@ -129,19 +126,15 @@ CAMERA_STREAM_PROFILES = {
 }
 
 
-# ─── Frame Rendering Helpers ──────────────────────────────────────────────────
 
 def render_offline_frame(camera_id: str, width: int = 640, height: int = 360) -> np.ndarray:
     """Generates an authentic CCTV offline static / loss-of-signal screen."""
     frame = np.random.randint(15, 35, (height, width, 3), dtype=np.uint8)
 
-    # Subtle scanlines
     frame[::4, :] = np.clip(frame[::4, :].astype(int) - 10, 0, 255).astype(np.uint8)
 
-    # Red/Amber warning border
     cv2.rectangle(frame, (20, 20), (width - 20, height - 20), (0, 140, 255), 2)
 
-    # Offline banner text
     cv2.putText(frame, "SIGNAL LOSS — HEARTBEAT TIMEOUT", (60, height // 2 - 20),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 180, 255), 2, cv2.LINE_AA)
     cv2.putText(frame, f"FEED: {camera_id} · LAJPAT NAGAR RING ROAD", (60, height // 2 + 15),
@@ -149,7 +142,6 @@ def render_offline_frame(camera_id: str, width: int = 640, height: int = 360) ->
     cv2.putText(frame, "DISPATCH TICKET: #TK-4402 (PENDING MAINTENANCE)", (60, height // 2 + 45),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 200, 255), 1, cv2.LINE_AA)
 
-    # Timestamp
     curr_time = time.strftime("%Y-%m-%d %H:%M:%S UTC+05:30")
     cv2.putText(frame, curr_time, (25, height - 30),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.45, (100, 100, 100), 1, cv2.LINE_AA)
@@ -161,20 +153,16 @@ def render_hud_overlay(frame: np.ndarray, profile: dict, camera_id: str, frame_n
     """Overlays high-tech surveillance telemetry, ANPR tags, and neural bounding boxes."""
     h, w = frame.shape[:2]
 
-    # Top & Bottom semi-transparent HUD bars
     overlay = frame.copy()
     cv2.rectangle(overlay, (0, 0), (w, 32), (8, 12, 22), -1)
     cv2.rectangle(overlay, (0, h - 26), (w, h), (8, 12, 22), -1)
     cv2.addWeighted(overlay, 0.75, frame, 0.25, 0, frame)
 
-    # Top Bar: Camera ID & Name
     cam_name = profile.get("name", camera_id)
     cam_dir = profile.get("direction", "")
     cv2.putText(frame, f"[{camera_id}] {cam_name.upper()} ({cam_dir})", (10, 21),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.45, (6, 182, 212), 1, cv2.LINE_AA)
 
-    # Top Bar Right: Live status + AI indicator
-    # Pulsing red recording dot
     pulse = int(time.time() * 2) % 2 == 0
     dot_color = (0, 0, 255) if pulse else (0, 0, 160)
     cv2.circle(frame, (w - 170, 16), 5, dot_color, -1)
@@ -183,23 +171,19 @@ def render_hud_overlay(frame: np.ndarray, profile: dict, camera_id: str, frame_n
     cv2.putText(frame, "YOLOv8·AI", (w - 78, 20),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.42, (34, 197, 94), 1, cv2.LINE_AA)
 
-    # Bounding Boxes with ANPR plate & speed telemetry
     bboxes = profile.get("bbox", [])
     plate = profile.get("plate", "DL01AB1044")
     speed = profile.get("speed", 40)
 
     for i, (x1, y1, x2, y2) in enumerate(bboxes):
-        # Scale bbox to current frame resolution
         scale_x = w / 640.0
         scale_y = h / 360.0
         bx1, by1 = int(x1 * scale_x), int(y1 * scale_y)
         bx2, by2 = int(x2 * scale_x), int(y2 * scale_y)
 
-        # Tactical corners for futuristic surveillance look
         color = (0, 215, 255) if "BLACKLIST" not in plate else (0, 0, 255)
         cv2.rectangle(frame, (bx1, by1), (bx2, by2), color, 1)
 
-        # Corner brackets
         c_len = 12
         cv2.line(frame, (bx1, by1), (bx1 + c_len, by1), (0, 255, 255), 2)
         cv2.line(frame, (bx1, by1), (bx1, by1 + c_len), (0, 255, 255), 2)
@@ -210,19 +194,16 @@ def render_hud_overlay(frame: np.ndarray, profile: dict, camera_id: str, frame_n
         cv2.line(frame, (bx2, by2), (bx2 - c_len, by2), (0, 255, 255), 2)
         cv2.line(frame, (bx2, by2), (bx2, by2 - c_len), (0, 255, 255), 2)
 
-        # Label tag background
         cv2.rectangle(frame, (bx1, by1 - 18), (bx1 + 175, by1), (13, 17, 32), -1)
         label_text = f"ANPR: {plate} | {speed}km/h"
         cv2.putText(frame, label_text, (bx1 + 4, by1 - 5),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.38, (6, 182, 212), 1, cv2.LINE_AA)
 
-    # Bottom Bar Left: Timestamp & GPS
     curr_time = time.strftime("%Y-%m-%d %H:%M:%S")
     lat, lng = profile.get("coords", (28.6139, 77.2090))
     cv2.putText(frame, f"{curr_time} IST | LAT: {lat:.4f} LNG: {lng:.4f}", (10, h - 9),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.38, (148, 163, 184), 1, cv2.LINE_AA)
 
-    # Bottom Bar Right: Resolution & Engine State
     resolution = profile.get("resolution", "1080P/60FPS")
     cv2.putText(frame, f"{resolution} | BACKEND STREAM", (w - 210, h - 9),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.38, (34, 197, 94), 1, cv2.LINE_AA)
@@ -245,11 +226,9 @@ def get_camera_frame(camera_id: str, frame_index: int, target_w: int = 640, targ
         "bbox": [(180, 140, 320, 250)],
     })
 
-    # If camera is flagged offline, render offline test card
     if profile.get("status") == "offline":
         return render_offline_frame(camera_id, target_w, target_h)
 
-    # If dataset frames are available, cycle through them with camera offset
     if TOTAL_FRAMES > 0:
         offset = profile.get("offset", 0)
         actual_idx = (frame_index + offset) % TOTAL_FRAMES
@@ -261,16 +240,13 @@ def get_camera_frame(camera_id: str, frame_index: int, target_w: int = 640, targ
                 frame = cv2.resize(frame, (target_w, target_h), interpolation=cv2.INTER_LINEAR)
             return render_hud_overlay(frame, profile, camera_id, frame_index)
 
-    # Synthetic fallback simulation if frames directory is unavailable
     synthetic = np.zeros((target_h, target_w, 3), dtype=np.uint8)
     cv2.rectangle(synthetic, (0, target_h // 2), (target_w, target_h), (35, 40, 48), -1)
     
-    # Road markings
     car_x = (frame_index * 8 + profile.get("offset", 0)) % (target_w + 100) - 50
     for i in range(0, target_w, 80):
         cv2.line(synthetic, (i, target_h // 2 + 60), (i + 40, target_h // 2 + 60), (200, 200, 200), 2)
     
-    # Moving car representation
     cv2.rectangle(synthetic, (car_x, target_h // 2 + 40), (car_x + 90, target_h // 2 + 80), (0, 0, 220), -1)
     cv2.rectangle(synthetic, (car_x + 15, target_h // 2 + 20), (car_x + 70, target_h // 2 + 40), (0, 0, 220), -1)
     
@@ -288,7 +264,6 @@ def generate_frames(camera_id: str, fps: int = 15) -> Generator[bytes, None, Non
         frame = get_camera_frame(camera_id, frame_index)
         frame_index += 1
 
-        # JPEG encode with optimal quality / bandwidth balance
         ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 75])
         if not ret:
             continue
@@ -307,7 +282,6 @@ def generate_frames(camera_id: str, fps: int = 15) -> Generator[bytes, None, Non
             time.sleep(frame_time - elapsed)
 
 
-# ─── API Endpoints ────────────────────────────────────────────────────────────
 
 @router.get("/stream/{camera_id}")
 async def stream_camera(camera_id: str):

@@ -9,7 +9,6 @@ from api.routes import router
 from api.stream import router as stream_router
 from rag.engine import build_index
 
-# Load environment variables from .env file
 load_dotenv()
 
 
@@ -39,8 +38,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# ─── CORS ────────────────────────────────────────────────────────────────────
-# Allow the React frontend (running on port 3000 or 3002) to call this API.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -55,7 +52,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ─── Routers ─────────────────────────────────────────────────────────────────
 app.include_router(router)
 app.include_router(stream_router, prefix="/api")
 

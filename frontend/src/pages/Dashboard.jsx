@@ -19,13 +19,13 @@ import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
 import api from '../api/client';
 
-// (Google Maps CityMap component handles all map rendering)
+
 
 
 export default function Dashboard() {
   const navigate = useNavigate();
 
-  // Dynamic live stats with small 3-second variation
+  
   const [stats, setStats] = useState({
     totalVehicles: 1281,
     activeTrajectories: 325,
@@ -65,17 +65,17 @@ export default function Dashboard() {
 
   return (
     <div className="flex bg-[#0a0d1a] min-h-screen text-[#f1f5f9]">
-      {/* 220px Fixed Sidebar */}
+      {}
       <Sidebar />
 
-      {/* Main Content Area */}
+      {}
       <div className="flex-1 ml-[220px] min-h-screen flex flex-col">
         <Topbar pageTitle="Dashboard" />
 
         <main className="p-6 space-y-6 flex-1">
-          {/* ROW 1: 4 Stat Cards */}
+          {}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Card 1: Total Vehicles */}
+            {}
             <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 relative overflow-hidden">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#64748b] uppercase tracking-wider">
@@ -96,7 +96,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Card 2: Active Trajectories */}
+            {}
             <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 relative overflow-hidden">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#64748b] uppercase tracking-wider">
@@ -116,7 +116,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Card 3: Avg Corridor Speed */}
+            {}
             <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 relative overflow-hidden">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#64748b] uppercase tracking-wider">
@@ -136,7 +136,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Card 4: Active Alerts */}
+            {}
             <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 relative overflow-hidden">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#64748b] uppercase tracking-wider">
@@ -157,9 +157,9 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* ROW 2: Map (65%) + Alerts panel (35%) */}
+          {}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* MAP CARD: 65% (8 cols) */}
+            {}
             <div className="lg:col-span-8 bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
@@ -183,12 +183,12 @@ export default function Dashboard() {
               </div>
 
 
-              {/* Google Maps */}
+              {}
               <CityMap cameras={cameras} height={360} />
 
             </div>
 
-            {/* ALERTS PANEL: 35% (4 cols) */}
+            {}
             <div className="lg:col-span-4 bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -204,7 +204,7 @@ export default function Dashboard() {
                   <span className="text-[11px] font-mono text-[#64748b]">AUTO-SYNC</span>
                 </div>
 
-                {/* Alert Items */}
+                {}
                 <div className="space-y-2.5">
                   {alerts.slice(0, 4).map((alert) => {
                     const isCrit = alert.severity === 'critical';
@@ -248,7 +248,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* View all alerts button */}
+              {}
               <button
                 onClick={() => navigate('/alerts')}
                 className="mt-4 w-full py-2.5 px-3 bg-[#0d1120] hover:bg-[#161f35] border border-[#1e2d45] hover:border-[#3b82f6] text-xs font-semibold text-[#3b82f6] rounded-lg transition-all flex items-center justify-center gap-1 group"
@@ -259,9 +259,9 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* ROW 3: 3 Analytics Cards */}
+          {}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Card 1: Traffic Flow (24 Hours) */}
+            {}
             <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col">
               <div className="flex items-center justify-between mb-3">
                 <div>
@@ -317,7 +317,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Card 2: Top Congested Segments */}
+            {}
             <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col">
               <div className="flex items-center justify-between mb-3">
                 <div>
@@ -370,7 +370,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Card 3: ANPR Engine Accuracy */}
+            {}
             <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-3">

@@ -67,7 +67,6 @@ def extract_video(video_path: Path, source_root: Path, destination_root: Path, e
 
         if index % every_nth == 0:
             frame_path = destination / f"frame_{index:06d}.jpg"
-            # Existing output is retained, so re-running safely resumes work.
             if not frame_path.exists() and not cv2.imwrite(str(frame_path), frame):
                 raise RuntimeError(f"Could not write {frame_path}")
             saved += 1

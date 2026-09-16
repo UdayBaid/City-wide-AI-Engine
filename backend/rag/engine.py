@@ -40,7 +40,6 @@ def _embed_text(text: str) -> np.ndarray:
         config=types.EmbedContentConfig(task_type="RETRIEVAL_DOCUMENT"),
     )
     vec = np.array(response.embeddings[0].values, dtype=np.float32)
-    # L2-normalize for cosine similarity via inner product
     norm = np.linalg.norm(vec)
     if norm > 0:
         vec = vec / norm

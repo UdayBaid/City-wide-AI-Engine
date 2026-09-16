@@ -17,18 +17,12 @@ class LSTMTransformer(nn.Module):
     ):
         super().__init__()
 
-        # ==========================================
-        # 1. Input Projection
-        # ==========================================
 
         self.input_projection = nn.Linear(
             input_dim,
             lstm_hidden
         )
 
-        # ==========================================
-        # 2. LSTM
-        # ==========================================
 
         self.lstm = nn.LSTM(
             input_size=lstm_hidden,
@@ -39,30 +33,20 @@ class LSTMTransformer(nn.Module):
             bidirectional=True
         )
 
-        # BiLSTM output dimension
         lstm_output_dim = lstm_hidden * 2
 
-        # ==========================================
-        # 3. Transformer Projection
-        # ==========================================
 
         self.transformer_projection = nn.Linear(
             lstm_output_dim,
             transformer_dim
         )
 
-        # ==========================================
-        # 4. Positional Encoding
-        # ==========================================
 
         self.positional_encoding = PositionalEncoding(
             d_model=transformer_dim,
             max_len=500
         )
 
-        # ==========================================
-        # 5. Transformer Encoder
-        # ==========================================
 
         encoder_layer = nn.TransformerEncoderLayer(
             d_model=transformer_dim,
@@ -79,9 +63,6 @@ class LSTMTransformer(nn.Module):
             num_layers=transformer_layers
         )
 
-        # ==========================================
-        # 6. Classification Head
-        # ==========================================
 
         self.classifier = nn.Sequential(
 
@@ -111,62 +92,31 @@ class LSTMTransformer(nn.Module):
 
     def forward(self, x):
 
-        # x:
-        # [batch, sequence_length, input_dim]
 
-        # Example:
-        # [32, 16, 512]
 
-        # ==========================================
-        # Input Projection
-        # ==========================================
 
         x = self.input_projection(x)
 
-        # [B, T, 256]
 
-        # ==========================================
-        # LSTM
-        # ==========================================
 
         x, _ = self.lstm(x)
 
-        # BiLSTM:
-        # [B, T, 512]
 
-        # ==========================================
-        # Transformer Projection
-        # ==========================================
 
         x = self.transformer_projection(x)
 
-        # [B, T, 512]
 
-        # ==========================================
-        # Positional Encoding
-        # ==========================================
 
         x = self.positional_encoding(x)
 
-        # ==========================================
-        # Transformer
-        # ==========================================
 
         x = self.transformer(x)
 
-        # [B, T, 512]
 
-        # ==========================================
-        # Temporal Pooling
-        # ==========================================
 
         x = x.mean(dim=1)
 
-        # [B, 512]
 
-        # ==========================================
-        # Classification
-        # ==========================================
 
         output = self.classifier(x)
 

@@ -9,14 +9,9 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import api from '../api/client';
 
-/**
- * CityMap — Surveillance Map component for Dashboard.
- * Supports dual-mode:
- * 1. Google Maps (when REACT_APP_GOOGLE_MAPS_KEY is provided)
- * 2. 100% Free Leaflet Dark Tactical Map (zero API key required, no setup needed)
- */
 
-// Dark map style for Google Maps
+
+
 const DARK_STYLE = [
   { elementType: 'geometry', stylers: [{ color: '#0a0d1a' }] },
   { elementType: 'labels.text.stroke', stylers: [{ color: '#0a0d1a' }] },
@@ -62,7 +57,7 @@ function GoogleCameraMarker({ cam, onClick }) {
   );
 }
 
-// Leaflet map size invalidator helper
+
 function LeafletMapResizer() {
   const map = useMap();
   useEffect(() => {
@@ -73,7 +68,7 @@ function LeafletMapResizer() {
   return null;
 }
 
-// Leaflet custom marker generator
+
 const createLeafletCameraIcon = (camId, isOffline) => L.divIcon({
   className: 'custom-leaflet-marker',
   html: `
@@ -169,7 +164,7 @@ export default function CityMap({ cameras = [], height = 360 }) {
           })}
         </MapContainer>
 
-        {/* Tactical Dark Mode Badge */}
+        {}
         <div style={{
           position: 'absolute', bottom: 8, left: 8, zIndex: 1000,
           background: 'rgba(13,17,32,0.85)', backdropFilter: 'blur(4px)',
@@ -182,7 +177,7 @@ export default function CityMap({ cameras = [], height = 360 }) {
     );
   }
 
-  // Google Maps mode if API key is provided
+  
   return (
     <div style={{ width: '100%', height, borderRadius: 8, overflow: 'hidden', border: '1px solid #1e2d45' }}>
       <APIProvider apiKey={apiKey}>

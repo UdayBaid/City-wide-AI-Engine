@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Quick start script for the City-wide AI Engine backend.
 Activates the venv and runs uvicorn.

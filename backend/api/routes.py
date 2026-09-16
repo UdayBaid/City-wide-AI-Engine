@@ -24,8 +24,6 @@ from rag import retrieve
 
 router = APIRouter(prefix="/api")
 
-# ─── In-memory data store (mirrors mockData.js) ───────────────────────────────
-# In production, replace these with real DB queries.
 
 CAMERA_NODES = [
     {"id": "CAM-01", "name": "Connaught Place Outer Circle", "shortName": "Connaught Place", "lat": 28.6315, "lng": 77.2167, "status": "online", "fps": 30, "resolution": "1080P/60FPS", "todayReads": 19420, "accuracy": "96.4%", "lastSeen": "Just now", "direction": "Radial-North", "videoSrc": "/videos/camera1.mp4", "streamUrl": "/api/stream/CAM-01", "frameUrl": "/api/frame/CAM-01", "lastPlate": "DL01AB1044", "lastSpeed": 38, "vehicleCount": 1420},
@@ -168,7 +166,6 @@ REPORTS_LIST = [
 ]
 
 
-# ─── Pydantic Models ──────────────────────────────────────────────────────────
 
 class ChatRequest(BaseModel):
     message: str
@@ -181,7 +178,6 @@ class ChatResponse(BaseModel):
     timestamp: str
 
 
-# ─── Endpoints ────────────────────────────────────────────────────────────────
 
 @router.get("/health")
 def health_check():
@@ -294,14 +290,12 @@ def chat(req: ChatRequest):
     if not api_key:
         raise HTTPException(status_code=500, detail="GEMINI_API_KEY not configured.")
 
-    # Step 1: Retrieve relevant context
     docs = retrieve(req.message, top_k=4)
     context_blocks = []
     for doc in docs:
         context_blocks.append(f"[{doc['title']}]\n{doc['content']}")
     context_str = "\n\n---\n\n".join(context_blocks)
 
-    # Step 2: Build system prompt
     system_prompt = f"""You are the AI Operations Assistant for the City-wide AI Traffic Surveillance Engine, 
 deployed across Delhi for SIH 2026.
 Your role is to help traffic operators with questions about protocols, camera statuses, 
@@ -321,10 +315,8 @@ Guidelines:
 - If asked about a specific vehicle plate, camera, or alert — reference the exact data if available.
 """
 
-    # Step 3: Call Gemini
     client = genai.Client(api_key=api_key)
 
-    # Build conversation history for multi-turn chat
     contents = []
     for turn in req.history[-6:]:  # Keep last 6 turns for context window efficiency
         contents.append(
@@ -333,7 +325,6 @@ Guidelines:
                 parts=[types.Part(text=turn["parts"])]
             )
         )
-    # Add current user message
     contents.append(
         types.Content(
             role="user",
@@ -341,7 +332,6 @@ Guidelines:
         )
     )
 
-    # Try primary model, then fallback, then raise friendly error
     models_to_try = ["gemini-3.6-flash", "gemini-1.5-flash"]
     response = None
     last_error = None
@@ -361,10 +351,8 @@ Guidelines:
         except Exception as e:
             last_error = e
             error_str = str(e)
-            # Only retry on 503/overload errors
             if "503" in error_str or "UNAVAILABLE" in error_str or "quota" in error_str.lower():
                 continue
-            # For other errors, raise immediately
             raise HTTPException(
                 status_code=500,
                 detail=f"Gemini API error: {error_str[:200]}"

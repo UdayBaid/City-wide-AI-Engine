@@ -21,9 +21,6 @@ DEVICE = (
 )
 
 
-# ==========================================
-# RESNET
-# ==========================================
 
 weights = models.ResNet18_Weights.DEFAULT
 
@@ -38,9 +35,6 @@ resnet = resnet.to(DEVICE)
 resnet.eval()
 
 
-# ==========================================
-# TRANSFORM
-# ==========================================
 
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -64,9 +58,6 @@ all_sequences = []
 vehicle_ids = []
 
 
-# ==========================================
-# VEHICLE SEQUENCES
-# ==========================================
 
 for vehicle_dir in sorted(
     CROP_DIR.iterdir()
@@ -88,7 +79,6 @@ for vehicle_dir in sorted(
         continue
 
 
-    # Take consecutive 16 frames
     for start in range(
         0,
         len(image_paths) -
@@ -149,9 +139,6 @@ for vehicle_dir in sorted(
         )
 
 
-# ==========================================
-# SAVE
-# ==========================================
 
 if len(all_sequences) == 0:
 

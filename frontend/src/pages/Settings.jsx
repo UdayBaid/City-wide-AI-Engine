@@ -33,7 +33,7 @@ export default function Settings() {
         <Topbar pageTitle="Settings" />
 
         <main className="p-6 space-y-6 flex-1 max-w-4xl">
-          {/* Header Banner */}
+          {}
           <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5">
             <div className="flex items-center gap-2">
               <SettingsIcon className="w-5 h-5 text-[#3b82f6]" />
@@ -43,9 +43,9 @@ export default function Settings() {
             </div>
           </div>
 
-          {/* Form */}
+          {}
           <form onSubmit={handleSave} className="space-y-6">
-            {/* SECTION 1: Vision Detection Engine */}
+            {}
             <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 space-y-5">
               <div className="flex items-center gap-2 pb-3 border-b border-[#1e2d45]">
                 <Cpu className="w-4 h-4 text-[#06b6d4]" />
@@ -54,7 +54,7 @@ export default function Settings() {
                 </h3>
               </div>
 
-              {/* Object Detection Engine Dropdown */}
+              {}
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-1.5">
                   Object Detection Engine
@@ -79,7 +79,7 @@ export default function Settings() {
                 </select>
               </div>
 
-              {/* OCR Confidence Threshold Slider */}
+              {}
               <div className="space-y-2">
                 <div className="flex justify-between items-center text-xs">
                   <label className="font-medium text-slate-300">
@@ -100,7 +100,7 @@ export default function Settings() {
               </div>
             </div>
 
-            {/* SECTION 2: Automated Violation Alarms */}
+            {}
             <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 space-y-5">
               <div className="flex items-center gap-2 pb-3 border-b border-[#1e2d45]">
                 <ShieldAlert className="w-4 h-4 text-[#ef4444]" />
@@ -109,7 +109,7 @@ export default function Settings() {
                 </h3>
               </div>
 
-              {/* Speeding Trigger input */}
+              {}
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-1.5">
                   Speeding Violation Trigger (km/h)
@@ -127,7 +127,7 @@ export default function Settings() {
                 </div>
               </div>
 
-              {/* Checkbox: NCR Crime Database hotlist */}
+              {}
               <div className="pt-2">
                 <label className="flex items-start gap-3 cursor-pointer select-none">
                   <input
@@ -148,7 +148,7 @@ export default function Settings() {
               </div>
             </div>
 
-            {/* Edge Node Hardware Cluster Config */}
+            {}
             <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 space-y-4">
               <div className="flex items-center gap-2 pb-3 border-b border-[#1e2d45]">
                 <Database className="w-4 h-4 text-[#22c55e]" />
@@ -181,7 +181,7 @@ export default function Settings() {
               </div>
             </div>
 
-            {/* Save Button */}
+            {}
             <div className="flex items-center gap-4 pt-2">
               <button
                 type="submit"

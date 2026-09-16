@@ -35,7 +35,7 @@ export default function AIAssistant({ isOpen, onClose }) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Focus input when panel opens
+  
   useEffect(() => {
     if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
@@ -49,7 +49,7 @@ export default function AIAssistant({ isOpen, onClose }) {
     setMessages(prev => [...prev, userMsg]);
     setLoading(true);
 
-    // Build history for the API (exclude the initial greeting and sources field)
+    
     const history = messages
       .slice(1)
       .map(m => ({ role: m.role, parts: m.parts }));
@@ -86,7 +86,7 @@ export default function AIAssistant({ isOpen, onClose }) {
   return (
     <div style={styles.overlay}>
       <div style={styles.panel}>
-        {/* Header */}
+        {}
         <div style={styles.header}>
           <div style={styles.headerLeft}>
             <div style={styles.statusDot(backendOnline)} />
@@ -100,7 +100,7 @@ export default function AIAssistant({ isOpen, onClose }) {
           <button style={styles.closeBtn} onClick={onClose}>✕</button>
         </div>
 
-        {/* Messages */}
+        {}
         <div style={styles.messages}>
           {messages.map((msg, i) => (
             <div key={i} style={styles.msgRow(msg.role)}>
@@ -109,7 +109,7 @@ export default function AIAssistant({ isOpen, onClose }) {
               </div>
               <div style={styles.bubble(msg.role)}>
                 <pre style={styles.msgText}>{msg.parts}</pre>
-                {/* Source citations */}
+                {}
                 {msg.sources && msg.sources.length > 0 && (
                   <div style={styles.sources}>
                     <span style={styles.sourcesLabel}>📚 Sources:</span>
@@ -134,7 +134,7 @@ export default function AIAssistant({ isOpen, onClose }) {
           <div ref={bottomRef} />
         </div>
 
-        {/* Suggestions */}
+        {}
         {messages.length <= 1 && (
           <div style={styles.suggestions}>
             {SUGGESTIONS.map((s, i) => (
@@ -145,7 +145,7 @@ export default function AIAssistant({ isOpen, onClose }) {
           </div>
         )}
 
-        {/* Input */}
+        {}
         <div style={styles.inputRow}>
           <textarea
             ref={inputRef}
@@ -170,7 +170,7 @@ export default function AIAssistant({ isOpen, onClose }) {
   );
 }
 
-// ─── Inline styles ────────────────────────────────────────────────────────────
+
 const styles = {
   overlay: {
     position: 'fixed', bottom: 24, right: 24, zIndex: 9999,

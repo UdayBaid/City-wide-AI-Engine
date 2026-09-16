@@ -4,9 +4,6 @@ import pandas as pd
 from ultralytics import YOLO
 
 
-# ==============================
-# CONFIGURATION
-# ==============================
 
 INPUT_DIR = Path("frames")
 OUTPUT_DIR = Path("bytetrack_output")
@@ -23,9 +20,6 @@ VEHICLE_CLASSES = {
 }
 
 
-# ==============================
-# OUTPUT DIRECTORIES
-# ==============================
 
 OUTPUT_DIR.mkdir(
     parents=True,
@@ -40,16 +34,10 @@ ANNOTATED_DIR.mkdir(
 )
 
 
-# ==============================
-# LOAD MODEL
-# ==============================
 
 model = YOLO(MODEL_PATH)
 
 
-# ==============================
-# GET FRAMES
-# ==============================
 
 image_extensions = {
     ".jpg",
@@ -72,9 +60,6 @@ if not frames:
     )
 
 
-# ==============================
-# TRACKING
-# ==============================
 
 tracking_data = []
 
@@ -102,9 +87,6 @@ for frame_path in frames:
     result = results[0]
 
 
-    # ==============================
-    # CHECK TRACK IDs
-    # ==============================
 
     if result.boxes is not None:
 
@@ -163,9 +145,6 @@ for frame_path in frames:
                 )
 
 
-    # ==============================
-    # SAVE TRACKED FRAME
-    # ==============================
 
     annotated_frame = result.plot(
         labels=True,
@@ -183,9 +162,6 @@ for frame_path in frames:
     )
 
 
-# ==============================
-# SAVE TRACKING CSV
-# ==============================
 
 df = pd.DataFrame(
     tracking_data
@@ -204,9 +180,6 @@ df.to_csv(
 )
 
 
-# ==============================
-# SUMMARY
-# ==============================
 
 unique_ids = (
     df["track_id"].nunique()

@@ -37,7 +37,7 @@ export default function Sidebar() {
 
   return (
     <aside className="w-[220px] min-w-[220px] h-screen bg-[#0d1120] border-r border-[#1e2d45] flex flex-col justify-between select-none z-30 fixed left-0 top-0">
-      {/* Brand Header */}
+      {}
       <div>
         <div className="p-4 border-b border-[#1e2d45]/80 flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-[#06b6d4]">
@@ -53,7 +53,7 @@ export default function Sidebar() {
           </div>
         </div>
 
-        {/* Navigation links */}
+        {}
         <nav className="p-2.5 space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -77,7 +77,7 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Admin Profile & Sign Out Footer */}
+      {}
       <div className="p-3 border-t border-[#1e2d45] bg-[#0d1120]/95">
         <div className="flex items-center justify-between mb-3 px-1">
           <div className="flex items-center gap-2">

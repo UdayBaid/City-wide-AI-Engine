@@ -27,13 +27,13 @@ export default function Alerts() {
     const resolvedItem = activeAlerts.find((a) => a.id === alertId);
     if (!resolvedItem) return;
 
-    // Call backend endpoint to resolve
+    
     api.resolveAlert(alertId).catch((err) => console.warn("Backend resolve alert warning:", err));
 
-    // Remove from active
+    
     setActiveAlerts((prev) => prev.filter((a) => a.id !== alertId));
 
-    // Append to historical incident logs
+    
     setIncidentLogs((prev) => [
       {
         id: `INC-${Math.floor(Math.random() * 900) + 100}`,
@@ -48,7 +48,7 @@ export default function Alerts() {
     ]);
   };
 
-  // Filter incident logs based on tab
+  
   const filteredIncidents = incidentLogs.filter((inc) => {
     if (activeTab === 'ALL') return true;
     if (activeTab === 'Critical') return inc.severity === 'critical';
@@ -66,7 +66,7 @@ export default function Alerts() {
         <Topbar pageTitle="Alerts" />
 
         <main className="p-6 space-y-6 flex-1">
-          {/* Header Title */}
+          {}
           <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
@@ -85,7 +85,7 @@ export default function Alerts() {
             </div>
           </div>
 
-          {/* TOP SECTION: Active Alert Cards in a Row / Grid */}
+          {}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {activeAlerts.map((alert) => {
               const isCrit = alert.severity === 'critical';
@@ -156,7 +156,7 @@ export default function Alerts() {
             )}
           </div>
 
-          {/* BOTTOM SECTION: Historical Incident Logs Table */}
+          {}
           <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
               <div>
@@ -165,7 +165,7 @@ export default function Alerts() {
                 </h3>
               </div>
 
-              {/* Filter tabs */}
+              {}
               <div className="flex items-center gap-1.5 bg-[#0d1120] p-1 rounded-lg border border-[#1e2d45]">
                 {['ALL', 'Critical', 'Warning', 'Info', 'Resolved'].map((tab) => (
                   <button
@@ -183,7 +183,7 @@ export default function Alerts() {
               </div>
             </div>
 
-            {/* Table */}
+            {}
             <div className="overflow-x-auto border border-[#1e2d45] rounded-lg">
               <table className="w-full text-left text-xs">
                 <thead className="bg-[#0d1120] text-[#64748b] font-mono text-[10px] uppercase border-b border-[#1e2d45]">

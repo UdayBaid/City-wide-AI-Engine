@@ -1,4 +1,4 @@
-// Mock data for City-Wide AI Traffic Surveillance System - SIH 2026
+
 
 export const CAMERA_NODES = [
   {
@@ -312,12 +312,12 @@ export const TOP_OD_CORRIDORS = [
   { corridor: "ITO → Kashmiri Gate", volume: 8320 }
 ];
 
-// 7 days x 24 hours congestion intensity matrix (0 = low, 1 = moderate, 2 = high, 3 = critical)
+
 export const DAYS_OF_WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export const WEEKLY_CONGESTION_MATRIX = DAYS_OF_WEEK.map((day, dIdx) => {
   const hours = Array.from({ length: 24 }, (_, h) => {
-    let level = "low"; // 0
+    let level = "low"; 
     if ((h >= 8 && h <= 11) || (h >= 17 && h <= 21)) {
       if (dIdx < 5) {
         level = (h === 9 || h === 10 || h === 18 || h === 19) ? "critical" : "high";

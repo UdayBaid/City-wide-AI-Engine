@@ -2,38 +2,38 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, Loader2, Cctv, ShieldCheck, AlertTriangle } from 'lucide-react';
 
-// ── Road & Car Configuration ──────────────────────────────────────────────────
+
 
 const ROAD_COLOR       = '#0e1623';
 const ASPHALT_COLOR    = '#141d2e';
 const LANE_MARK_COLOR  = '#1e2d45';
 const ROAD_WIDTH       = 38;
 
-// Roads: { axis:'h'|'v', pct: 0-1 }  (percent of canvas dimension)
+
 const H_ROADS = [0.18, 0.38, 0.57, 0.76];
 const V_ROADS = [0.2, 0.42, 0.63, 0.82];
 
-// Car colour palettes
+
 const CAR_COLORS = [
-  { body: '#06b6d4', light: '#a5f3fc' }, // cyan
-  { body: '#3b82f6', light: '#bfdbfe' }, // blue
-  { body: '#f59e0b', light: '#fde68a' }, // amber
-  { body: '#22c55e', light: '#bbf7d0' }, // green
-  { body: '#e2e8f0', light: '#ffffff' }, // white
-  { body: '#f43f5e', light: '#fecdd3' }, // red
-  { body: '#a855f7', light: '#e9d5ff' }, // purple
+  { body: '#06b6d4', light: '#a5f3fc' }, 
+  { body: '#3b82f6', light: '#bfdbfe' }, 
+  { body: '#f59e0b', light: '#fde68a' }, 
+  { body: '#22c55e', light: '#bbf7d0' }, 
+  { body: '#e2e8f0', light: '#ffffff' }, 
+  { body: '#f43f5e', light: '#fecdd3' }, 
+  { body: '#a855f7', light: '#e9d5ff' }, 
 ];
 
 function makeCars(W, H) {
   const cars = [];
   let id = 0;
 
-  // Horizontal road cars
+  
   H_ROADS.forEach((pct, ri) => {
     const y = pct * H;
-    const count = 3 + Math.floor(Math.random() * 3); // 3-5 per road
+    const count = 3 + Math.floor(Math.random() * 3); 
     for (let i = 0; i < count; i++) {
-      const dir = ri % 2 === 0 ? 1 : -1; // alternate direction per road
+      const dir = ri % 2 === 0 ? 1 : -1; 
       const color = CAR_COLORS[(id) % CAR_COLORS.length];
       cars.push({
         id: id++,
@@ -44,10 +44,10 @@ function makeCars(W, H) {
         speed: 1.2 + Math.random() * 1.8,
         w: 20, h: 10,
         color,
-        lane: ri % 2 === 0 ? -6 : 6, // offset above/below road centre
+        lane: ri % 2 === 0 ? -6 : 6, 
       });
     }
-    // Opposite lane on same road
+    
     const count2 = 2 + Math.floor(Math.random() * 3);
     for (let i = 0; i < count2; i++) {
       const dir = ri % 2 === 0 ? -1 : 1;
@@ -66,7 +66,7 @@ function makeCars(W, H) {
     }
   });
 
-  // Vertical road cars
+  
   V_ROADS.forEach((pct, ri) => {
     const x = pct * W;
     const count = 3 + Math.floor(Math.random() * 3);
@@ -85,7 +85,7 @@ function makeCars(W, H) {
         lane: ri % 2 === 0 ? -6 : 6,
       });
     }
-    // Opposite lane
+    
     const count2 = 2 + Math.floor(Math.random() * 3);
     for (let i = 0; i < count2; i++) {
       const dir = ri % 2 === 0 ? -1 : 1;
@@ -132,11 +132,11 @@ function TrafficCanvas() {
       const H = canvas.height;
       ctx.clearRect(0, 0, W, H);
 
-      // Background
+      
       ctx.fillStyle = '#06080f';
       ctx.fillRect(0, 0, W, H);
 
-      // Subtle dot grid
+      
       ctx.fillStyle = 'rgba(30,45,69,0.35)';
       for (let gx = 0; gx < W; gx += 22) {
         for (let gy = 0; gy < H; gy += 22) {
@@ -146,18 +146,18 @@ function TrafficCanvas() {
         }
       }
 
-      // Draw horizontal roads
+      
       H_ROADS.forEach(pct => {
         const y = pct * H;
-        // Road bed
+        
         ctx.fillStyle = ASPHALT_COLOR;
         ctx.fillRect(0, y - ROAD_WIDTH / 2, W, ROAD_WIDTH);
-        // Road border lines
+        
         ctx.strokeStyle = '#1e2d45';
         ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(0, y - ROAD_WIDTH / 2); ctx.lineTo(W, y - ROAD_WIDTH / 2); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(0, y + ROAD_WIDTH / 2); ctx.lineTo(W, y + ROAD_WIDTH / 2); ctx.stroke();
-        // Centre dashed line
+        
         ctx.strokeStyle = '#1e3a5a';
         ctx.lineWidth = 0.8;
         ctx.setLineDash([10, 10]);
@@ -165,7 +165,7 @@ function TrafficCanvas() {
         ctx.setLineDash([]);
       });
 
-      // Draw vertical roads
+      
       V_ROADS.forEach(pct => {
         const x = pct * W;
         ctx.fillStyle = ASPHALT_COLOR;
@@ -181,7 +181,7 @@ function TrafficCanvas() {
         ctx.setLineDash([]);
       });
 
-      // Intersections — slightly lighter boxes
+      
       H_ROADS.forEach(hy => {
         V_ROADS.forEach(vx => {
           ctx.fillStyle = '#111827';
@@ -193,7 +193,7 @@ function TrafficCanvas() {
         });
       });
 
-      // Update & draw cars
+      
       carsRef.current.forEach(car => {
         if (car.axis === 'h') {
           car.x += car.dir * car.speed;
@@ -203,7 +203,7 @@ function TrafficCanvas() {
           const cy = car.y + car.lane;
           const cx = car.x;
 
-          // Headlight glow (front of car)
+          
           const frontX = car.dir > 0 ? cx + car.w / 2 : cx - car.w / 2;
           const grd = ctx.createRadialGradient(frontX, cy, 0, frontX, cy, 22);
           grd.addColorStop(0, car.color.light + '55');
@@ -211,16 +211,16 @@ function TrafficCanvas() {
           ctx.fillStyle = grd;
           ctx.fillRect(frontX - 22, cy - 14, 44, 28);
 
-          // Car body
+          
           ctx.save();
           ctx.translate(cx, cy);
           if (car.dir < 0) ctx.scale(-1, 1);
           
-          // Shadow
+          
           ctx.shadowColor = car.color.body;
           ctx.shadowBlur = 8;
           
-          // Body rect
+          
           const r = 3;
           const bw = car.w, bh = car.h;
           ctx.beginPath();
@@ -237,17 +237,17 @@ function TrafficCanvas() {
           ctx.fillStyle = car.color.body;
           ctx.fill();
 
-          // Windshield
+          
           ctx.fillStyle = 'rgba(255,255,255,0.15)';
           ctx.fillRect(2, -bh/2 + 1.5, bw/2 - 3, bh - 3);
 
-          // Headlights
+          
           ctx.shadowBlur = 0;
           ctx.fillStyle = car.color.light;
           ctx.fillRect(bw/2 - 2.5, -bh/2 + 1.5, 2, 2.5);
           ctx.fillRect(bw/2 - 2.5, bh/2 - 4, 2, 2.5);
 
-          // Tail lights
+          
           ctx.fillStyle = '#ef4444';
           ctx.fillRect(-bw/2 + 0.5, -bh/2 + 1.5, 1.5, 2.5);
           ctx.fillRect(-bw/2 + 0.5, bh/2 - 4, 1.5, 2.5);
@@ -256,7 +256,7 @@ function TrafficCanvas() {
           ctx.shadowBlur = 0;
 
         } else {
-          // Vertical car
+          
           car.y += car.dir * car.speed;
           if (car.y > H + 40) car.y = -40;
           if (car.y < -40)    car.y = H + 40;
@@ -330,7 +330,7 @@ function TrafficCanvas() {
   );
 }
 
-// ── Login Page ────────────────────────────────────────────────────────────────
+
 
 export default function LoginPage() {
   const [email, setEmail]             = useState('');
@@ -438,20 +438,20 @@ export default function LoginPage() {
         .login-btn:disabled { opacity:.75; cursor:not-allowed; }
       `}</style>
 
-      {/* ── LEFT — Live Traffic Simulation ──────────────────────────────── */}
+      {}
       <div
         className="hidden lg:flex w-[58%] h-full flex-col relative overflow-hidden"
         style={{ borderRight: '1px solid #1e2d45' }}
       >
-        {/* Full-bleed canvas */}
+        {}
         <div className="absolute inset-0">
           <TrafficCanvas />
         </div>
 
-        {/* DRx brand overlay — top left */}
+        {}
         <div className="relative z-20 flex items-start p-8 pointer-events-none">
           <div>
-            {/* DRx Logo */}
+            {}
             <div
               className="drx-glow text-[52px] font-black tracking-tight leading-none"
               style={{ color: '#06b6d4', fontFamily: "'Inter', sans-serif" }}
@@ -467,7 +467,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Bottom info strip */}
+        {}
         <div
           className="relative z-20 mt-auto px-8 py-5 flex items-end justify-between pointer-events-none"
           style={{ background: 'linear-gradient(to top, rgba(6,8,15,0.92) 0%, transparent 100%)' }}
@@ -491,12 +491,12 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* ── RIGHT — Login Form ───────────────────────────────────────────── */}
+      {}
       <div
         className="flex-1 h-full flex flex-col items-center justify-center px-8 sm:px-14 relative"
         style={{ background: '#0a0d1a' }}
       >
-        {/* Subtle dot grid */}
+        {}
         <div
           className="pointer-events-none absolute inset-0"
           style={{
@@ -508,7 +508,7 @@ export default function LoginPage() {
 
         <div className={`relative z-10 w-full max-w-[370px] ${shake ? 'animate-shake' : ''}`}>
 
-          {/* Header */}
+          {}
           <div className="mb-8">
             <div className="flex items-center gap-2.5 mb-5">
               <div
@@ -534,7 +534,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* Clearance badge */}
+          {}
           <div
             className="flex items-center gap-2 rounded-lg px-3 py-2 mb-5"
             style={{ background: '#0d1120', border: '1px solid #1e2d45' }}
@@ -546,13 +546,13 @@ export default function LoginPage() {
             </span>
           </div>
 
-          {/* Form card */}
+          {}
           <form
             onSubmit={handleLogin}
             className="rounded-xl p-6 space-y-4 card-pulse"
             style={{ background: '#0d1120', border: '1px solid #1e2d45' }}
           >
-            {/* Email */}
+            {}
             <div>
               <label
                 className="block text-[10px] font-mono mb-1.5 tracking-widest uppercase"
@@ -576,7 +576,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Password */}
+            {}
             <div>
               <label
                 className="block text-[10px] font-mono mb-1.5 tracking-widest uppercase"
@@ -611,7 +611,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Error */}
+            {}
             {error && (
               <div
                 className="flex items-center gap-2 rounded-lg px-3 py-2"
@@ -624,7 +624,7 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Remember / Reset */}
+            {}
             <div className="flex items-center justify-between pt-0.5">
               <label className="flex items-center gap-2 cursor-pointer" style={{ color: '#475569' }}>
                 <input
@@ -646,7 +646,7 @@ export default function LoginPage() {
               </button>
             </div>
 
-            {/* Submit */}
+            {}
             <div className="pt-1">
               <button type="submit" disabled={isLoading} className="login-btn">
                 {isLoading ? (
@@ -661,7 +661,7 @@ export default function LoginPage() {
             </div>
           </form>
 
-          {/* Footer */}
+          {}
           <p className="text-center text-[10px] font-mono mt-6" style={{ color: '#1e3a5f' }}>
             DRx · CITY-WIDE AI ENGINE · SECURE CHANNEL · v2.4.0
           </p>

@@ -14,7 +14,7 @@ import Topbar from '../components/Topbar';
 import { TRAJECTORY_TARGET } from '../data/mockData';
 import api from '../api/client';
 
-// Helper component to invalidate Leaflet container size on mount to prevent grey/white rendering
+
 function MapResizer() {
   const map = useMap();
   useEffect(() => {
@@ -29,7 +29,7 @@ function MapResizer() {
   return null;
 }
 
-// Helper to fit map bounds to current vehicle trajectory
+
 function MapBoundsFitter({ positions }) {
   const map = useMap();
   useEffect(() => {
@@ -45,7 +45,7 @@ function MapBoundsFitter({ positions }) {
   return null;
 }
 
-// Map markers
+
 const createNodeIcon = (camId, isPathNode, nodeIndex) => {
   if (isPathNode) {
     return L.divIcon({
@@ -105,7 +105,7 @@ export default function Trajectories() {
   const [searchDate, setSearchDate] = useState('2026-09-14');
   const [target, setTarget] = useState(TRAJECTORY_TARGET);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
-  const [mapStyle, setMapStyle] = useState('tactical'); // 'tactical' | 'osm_dark'
+  const [mapStyle, setMapStyle] = useState('tactical'); 
 
   useEffect(() => {
     api.getCameras().then(data => setCameras(data.cameras || []));
@@ -114,10 +114,10 @@ export default function Trajectories() {
         if (data && data.nodes) setTarget(data);
       })
       .catch(err => console.error("Failed to load trajectory:", err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, []);
 
-  // Path coordinates for polyline: CAM-06 -> CAM-04 -> CAM-01 -> CAM-02
+  
   const pathPositions = (target.nodes || []).map((n) => [n.lat, n.lng]);
 
   const handleTrack = (e) => {
@@ -145,7 +145,7 @@ export default function Trajectories() {
         <Topbar pageTitle="Trajectories" />
 
         <main className="p-6 space-y-6 flex-1">
-          {/* Header & Filter Search bar */}
+          {}
           <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
@@ -157,7 +157,7 @@ export default function Trajectories() {
                 </div>
               </div>
 
-              {/* Input & Track Form */}
+              {}
               <form onSubmit={handleTrack} className="flex flex-wrap items-center gap-3">
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
@@ -194,9 +194,9 @@ export default function Trajectories() {
             </div>
           </div>
 
-          {/* Main 2-Panel Layout: LEFT 60% Map | RIGHT 40% Details */}
+          {}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* LEFT 60% (7 cols on 12-grid or 60% ratio) */}
+            {}
             <div className="lg:col-span-7 bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
@@ -211,7 +211,7 @@ export default function Trajectories() {
                 </div>
               </div>
 
-              {/* Map */}
+              {}
               <div className="w-full h-[520px] rounded-lg overflow-hidden border border-[#1e2d45] relative bg-[#070a14]">
                 <MapContainer
                   center={[28.6180, 77.2100]}
@@ -222,7 +222,7 @@ export default function Trajectories() {
                   <MapResizer />
                   <MapBoundsFitter positions={pathPositions} />
 
-                  {/* 100% Free Watermark-Free Dark Surveillance Basemaps — No API Key Required */}
+                  {}
                   {mapStyle === 'tactical' ? (
                     <TileLayer
                       key="osm-tactical-dark"
@@ -241,7 +241,7 @@ export default function Trajectories() {
                     />
                   )}
 
-                  {/* Connecting dashed polyline */}
+                  {}
                   <Polyline
                     positions={pathPositions}
                     pathOptions={{
@@ -253,7 +253,7 @@ export default function Trajectories() {
                     }}
                   />
 
-                  {/* Render All 8 Cameras with special style for target path */}
+                  {}
                   {cameras.map((cam) => {
                     const nodeIndex = (target.nodes || []).findIndex((n) => n.camera === cam.id);
                     const isPathNode = nodeIndex !== -1;
@@ -294,7 +294,7 @@ export default function Trajectories() {
                               <p className="text-[11px] text-[#64748b]">Surveillance Node · Active Optical Scanner</p>
                             )}
 
-                            {/* Embedded Live Camera Feed Stream Preview */}
+                            {}
                             {cam.status === 'online' && (
                               <div className="mt-2 rounded overflow-hidden border border-[#1e2d45] bg-black">
                                 <img
@@ -315,7 +315,7 @@ export default function Trajectories() {
                   })}
                 </MapContainer>
 
-                {/* Dark Theme & Layer Controls (Zero API Key, Zero Watermark) */}
+                {}
                 <div className="absolute top-3 left-3 z-[1000] flex items-center gap-1.5 bg-[#0d1120]/90 backdrop-blur-md border border-[#1e2d45] p-1 rounded-lg text-[10px] font-mono">
                   <button
                     onClick={() => setMapStyle('tactical')}
@@ -335,7 +335,7 @@ export default function Trajectories() {
                   </button>
                 </div>
 
-                {/* Trajectory legend pill on top of map */}
+                {}
                 <div className="absolute top-3 right-3 z-[1000] bg-[#0d1120]/90 backdrop-blur-md border border-[#1e2d45] p-2.5 rounded-lg text-[10px] font-mono space-y-1">
                   <div className="text-cyan-400 font-bold">ROUTE CHRONOLOGY:</div>
                   <div className="text-slate-300">1. Dhaula Kuan (14:10)</div>
@@ -346,10 +346,10 @@ export default function Trajectories() {
               </div>
             </div>
 
-            {/* RIGHT 40% (5 cols on 12-grid) */}
+            {}
             <div className="lg:col-span-5 bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col justify-between">
               <div className="space-y-5">
-                {/* Target Profile Card */}
+                {}
                 <div className="p-4 bg-[#0d1120] border border-[#1e2d45] rounded-xl">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-mono uppercase tracking-widest text-[#64748b]">
@@ -373,7 +373,7 @@ export default function Trajectories() {
                   </div>
                 </div>
 
-                {/* Stats Row */}
+                {}
                 <div className="grid grid-cols-3 gap-2.5">
                   <div className="p-3 bg-[#0d1120] border border-[#1e2d45] rounded-lg text-center">
                     <span className="text-[10px] text-[#64748b] font-mono block">DISTANCE</span>
@@ -397,7 +397,7 @@ export default function Trajectories() {
                   </div>
                 </div>
 
-                {/* Camera Detection Timeline (4 Nodes) */}
+                {}
                 <div>
                   <h4 className="text-xs font-semibold text-[#f1f5f9] mb-2.5 flex items-center justify-between">
                     <span>Camera Detection Timeline (4 Nodes)</span>
@@ -441,7 +441,7 @@ export default function Trajectories() {
                 </div>
               </div>
 
-              {/* Export Forensic Report Button */}
+              {}
               <div className="mt-6 pt-4 border-t border-[#1e2d45]">
                 <button
                   onClick={handleExportPDF}

@@ -58,7 +58,7 @@ export default function Analytics() {
         <Topbar pageTitle="Analytics" />
 
         <main className="p-6 space-y-6 flex-1">
-          {/* Header Title Banner */}
+          {}
           <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5">
             <div className="flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-[#3b82f6]" />
@@ -68,9 +68,9 @@ export default function Analytics() {
             </div>
           </div>
 
-          {/* ROW 1: 2 Charts */}
+          {}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Chart 1: Hourly Vehicle Volume */}
+            {}
             <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <div>
@@ -116,7 +116,7 @@ export default function Analytics() {
               </div>
             </div>
 
-            {/* Chart 2: Corridor Velocity Distribution */}
+            {}
             <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <div>
@@ -158,9 +158,9 @@ export default function Analytics() {
             </div>
           </div>
 
-          {/* ROW 2: Matrix & OD Corridors */}
+          {}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* LEFT: Weekly Congestion Matrix (7 Days x 24h) */}
+            {}
             <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -186,7 +186,7 @@ export default function Analytics() {
                   </div>
                 </div>
 
-                {/* 7x24 Matrix visualization */}
+                {}
                 <div className="space-y-1.5 overflow-x-auto pb-2">
                   <div className="flex items-center gap-1 pl-10 text-[9px] font-mono text-[#64748b]">
                     {Array.from({ length: 24 }, (_, i) => (
@@ -268,7 +268,7 @@ export default function Analytics() {
             </div>
           </div>
 
-          {/* ROW 3: Optical Sensor & Camera Node Performance Table */}
+          {}
           <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5">
             <div className="flex items-center justify-between mb-4">
               <div>

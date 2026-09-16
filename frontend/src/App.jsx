@@ -22,11 +22,11 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Routes */}
+        {}
         <Route path="/" element={<CountdownPage />} />
         <Route path="/login" element={<LoginPage />} />
 
-        {/* Protected Dashboard Routes */}
+        {}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/cameras" element={<LiveCameras />} />
@@ -39,14 +39,14 @@ function App() {
           <Route path="/settings" element={<Settings />} />
         </Route>
 
-        {/* Fallback Redirect */}
+        {}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
-      {/* ─── Floating AI Assistant ─────────────────────────────────── */}
+      {}
       <AIAssistant isOpen={aiOpen} onClose={() => setAiOpen(false)} />
 
-      {/* Floating toggle button */}
+      {}
       {!aiOpen && (
         <button
           id="ai-assistant-toggle"

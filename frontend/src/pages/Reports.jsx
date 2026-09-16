@@ -31,7 +31,7 @@ export default function Reports() {
     setDownloadingId(rep.id);
     setTimeout(() => {
       setDownloadingId(null);
-      // Mock triggering file download
+      
       const element = document.createElement("a");
       const file = new Blob([`AI Traffic Surveillance - Forensic Report: ${rep.title}\nReport ID: ${rep.id}\nDate: ${rep.date}`], {type: 'text/plain'});
       element.href = URL.createObjectURL(file);
@@ -81,7 +81,7 @@ export default function Reports() {
         <Topbar pageTitle="Reports" />
 
         <main className="p-6 space-y-6 flex-1">
-          {/* Header Banner */}
+          {}
           <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
@@ -101,7 +101,7 @@ export default function Reports() {
             </button>
           </div>
 
-          {/* Reports Table Card */}
+          {}
           <div className="bg-[#111827] border border-[#1e2d45] rounded-xl overflow-hidden">
             <div className="p-4 bg-[#0d1120] border-b border-[#1e2d45] flex items-center justify-between">
               <span className="text-xs font-semibold text-slate-300">
@@ -175,7 +175,7 @@ export default function Reports() {
         </main>
       </div>
 
-      {/* Modal for Generating Custom Report */}
+      {}
       {showGenerateModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-[#111827] border border-[#1e2d45] rounded-xl max-w-md w-full p-6 space-y-4 shadow-2xl">

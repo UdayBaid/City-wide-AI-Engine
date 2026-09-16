@@ -41,7 +41,7 @@ export default function Vehicles() {
         <Topbar pageTitle="Vehicles" />
 
         <main className="p-6 space-y-6 flex-1">
-          {/* Header */}
+          {}
           <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
@@ -59,7 +59,7 @@ export default function Vehicles() {
             </div>
           </div>
 
-          {/* Search & Type Filter */}
+          {}
           <div className="bg-[#111827] border border-[#1e2d45] rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-3 flex-1">
               <div className="relative min-w-[240px]">
@@ -89,7 +89,7 @@ export default function Vehicles() {
             </div>
           </div>
 
-          {/* Vehicles Cards Grid */}
+          {}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {filteredVehicles.map((veh) => {
               const isBlacklist = veh.flag.includes('BLACKLIST');
